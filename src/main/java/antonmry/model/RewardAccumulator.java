@@ -82,8 +82,14 @@ public class RewardAccumulator {
         private int rewardPoints;
 
         private Builder(Purchase purchase){
+
+            // TODO:
            this.customerId = purchase.getLastName()+","+purchase.getFirstName();
+
+           // TODO:
            this.purchaseTotal = purchase.getPrice() * (double) purchase.getQuantity();
+
+           // TODO:
            this.rewardPoints = (int) purchaseTotal;
         }
 
