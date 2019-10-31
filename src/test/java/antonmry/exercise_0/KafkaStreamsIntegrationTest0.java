@@ -2,8 +2,6 @@ package antonmry.exercise_0;
 
 import antonmry.clients.producer.MockDataProducer;
 import antonmry.model.Purchase;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -19,19 +17,17 @@ import java.util.Properties;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.Assert.assertThat;
 
-public class KafkaStreamsIntegrationTest {
+public class KafkaStreamsIntegrationTest0 {
 
     private static final int NUM_BROKERS = 1;
     private static final String STRING_SERDE_CLASSNAME = Serdes.String().getClass().getName();
 
-    private KafkaStreamsApp kafkaStreamsApp;
+    private KafkaStreamsApp0 kafkaStreamsApp;
     private Properties producerConfig;
     private Properties consumerConfig;
 
     private static final String TRANSACTIONS_TOPIC = "transactions";
     private static final String PURCHASES_TOPIC = "purchases";
-
-    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
     @ClassRule
     public static final EmbeddedKafkaCluster EMBEDDED_KAFKA = new EmbeddedKafkaCluster(NUM_BROKERS);
@@ -53,7 +49,7 @@ public class KafkaStreamsIntegrationTest {
 
         properties.put(IntegrationTestUtils.INTERNAL_LEAVE_GROUP_ON_CLOSE, true);
 
-        kafkaStreamsApp = new KafkaStreamsApp(properties);
+        kafkaStreamsApp = new KafkaStreamsApp0(properties);
         kafkaStreamsApp.start();
 
         producerConfig = TestUtils.producerConfig(EMBEDDED_KAFKA.bootstrapServers(),
@@ -87,7 +83,10 @@ public class KafkaStreamsIntegrationTest {
 
         actualValues
                 .stream()
-                .forEach(v -> assertThat(v.getCreditCardNumber(), matchesPattern("xxxx-xxxx-xxxx-\\d\\d\\d\\d")));
+                .forEach(v -> assertThat(
+                        v.getCreditCardNumber(),
+                        matchesPattern("xxxx-xxxx-xxxx-\\d\\d\\d\\d")
+                ));
 
     }
 

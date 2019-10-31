@@ -19,13 +19,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class KafkaStreamsApp {
+public class KafkaStreamsApp0 {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp0.class);
 
     private KafkaStreams kafkaStreams;
 
-    public KafkaStreamsApp(Properties properties) {
+    public KafkaStreamsApp0(Properties properties) {
 
         StreamsConfig streamsConfig = new StreamsConfig(properties);
 
@@ -64,7 +64,7 @@ public class KafkaStreamsApp {
     }
 
     public static void main(String[] args) throws Exception {
-        KafkaStreamsApp kafkaStreamsApp = new KafkaStreamsApp(getProperties());
+        KafkaStreamsApp0 kafkaStreamsApp = new KafkaStreamsApp0(getProperties());
         kafkaStreamsApp.start();
         Thread.sleep(65000);
         kafkaStreamsApp.stop();

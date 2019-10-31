@@ -85,9 +85,16 @@ public class PurchasePattern {
         }
 
         private Builder(Purchase purchase) {
+            // TODO: obtain Zip Code from purchase
             this.zipCode = purchase.getZipCode();
+
+            // TODO: obtain Item from purchase
             this.item = purchase.getItemPurchased();
+
+            // TODO: obtain PurchaseDate from purchase
             this.date = purchase.getPurchaseDate();
+
+            // TODO: amount should be the price multiply by the number of products
             this.amount = purchase.getPrice() * purchase.getQuantity();
         }
 
