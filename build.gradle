@@ -25,11 +25,18 @@ targetCompatibility = 1.8
 
 task runExercise0(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
-    main = "antonmry.exercise_0.KafkaStreamsApp"
+    main = "antonmry.exercise_0.KafkaStreamsApp0"
 }
 
-mainClassName = 'antonmry.exercise_0_solved.KafkaStreamsYellingApp'
+task runExercise1(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "antonmry.exercise_1.KafkaStreamsApp1"
+}
 
+task runExercise2(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "antonmry.exercise_2.KafkaStreamsApp2"
+}
 jar {
     archiveName = 'antonmry-kafka-streams-workshop-1.0-SNAPSHOT.jar'
 }

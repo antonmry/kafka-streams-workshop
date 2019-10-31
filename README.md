@@ -90,6 +90,19 @@ Linux:
 Done? Do you have time yet? Try with the optional part: improve performance changing from JSON to Avro serialization. 
 See the [official documentation](https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro).
 
+### Exercise 2: filtering, branching and adding keys
+
+OPTIONAL: 
+
+```
+https://hub.docker.com/r/spotify/kafka/ 
+docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=`docker-machine ip \`docker-machine active\`` --env ADVERTISED_PORT=9092 spotify/kafka
+docker run -p 2181:2181 -p 9092:9092  spotify/kafka
+
+./gradlew runExercise0
+```
+
+
 ## Acknowledgements
 
 This workshop content and source code has been heavily inspired by `Kafka Streams in Action`. If you really want to 
