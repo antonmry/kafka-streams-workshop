@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class KafkaStreamsIntegrationTest2 {
@@ -36,6 +37,8 @@ public class KafkaStreamsIntegrationTest2 {
     private static final String PURCHASES_TOPIC = "purchases";
     private static final String PATTERNS_TOPIC = "patterns";
     private static final String REWARDS_TOPIC = "rewards";
+    private static final String SHOES_TOPIC = "shoes";
+    private static final String FRAGRANCES_TOPIC = "fragrances";
 
     @ClassRule
     public static final EmbeddedKafkaCluster EMBEDDED_KAFKA = new EmbeddedKafkaCluster(NUM_BROKERS);
@@ -78,11 +81,22 @@ public class KafkaStreamsIntegrationTest2 {
     public void maskCreditCardsAndFilterSmallPurchases() throws Exception {
 
         int expectedNumberOfRecords = 100;
+
+        List<Purchase> previousValues = MockDataProducer.convertFromJson(
+                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
+                        consumerConfig,
+                        TRANSACTIONS_TOPIC,
+                        expectedNumberOfRecords),
+                Purchase.class);
+
+        System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
+        long filteredNumberOfRecords = previousValues.stream().filter(v -> v.getPrice() > 5.0).count();
+
         List<Purchase> actualValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         PURCHASES_TOPIC,
-                        expectedNumberOfRecords),
+                        Math.toIntExact(filteredNumberOfRecords)),
                 Purchase.class);
 
         System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
@@ -92,14 +106,12 @@ public class KafkaStreamsIntegrationTest2 {
                 matchesPattern("xxxx-xxxx-xxxx-\\d\\d\\d\\d")
         ));
 
-        // Note: this test isn't deterministic because the price is randomly generated. It should be fixed.
+        assertEquals(filteredNumberOfRecords, actualValues.stream().count());
+
         actualValues.stream().forEach(v -> assertThat(
                 v.getPrice(),
                 greaterThan(5.0)
         ));
-
-
-        // TODO: add test for key?
     }
 
     @Test
@@ -149,6 +161,62 @@ public class KafkaStreamsIntegrationTest2 {
         ));
     }
 
-    // TODO: add test for branch
+    @Test
+    public void branchShoesAndFragances() throws Exception {
+
+        int expectedNumberOfRecords = 100;
+
+        List<Purchase> previousValues = MockDataProducer.convertFromJson(
+                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
+                        consumerConfig,
+                        TRANSACTIONS_TOPIC,
+                        expectedNumberOfRecords),
+                Purchase.class);
+
+        System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
+
+        long shoesNumberOfRecords = previousValues.stream()
+                .filter(v -> v.getPrice() > 5.0)
+                .filter(v -> v.getDepartment().equalsIgnoreCase("shoes"))
+                .count();
+
+        long fragrancesNumberOfRecords = previousValues.stream()
+                .filter(v -> v.getPrice() > 5.0)
+                .filter(v -> v.getDepartment().equalsIgnoreCase("fragrance"))
+                .count();
+
+        List<Purchase> shoesValues = MockDataProducer.convertFromJson(
+                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
+                        consumerConfig,
+                        SHOES_TOPIC,
+                        Math.toIntExact(shoesNumberOfRecords)),
+                Purchase.class);
+
+        System.out.println(SHOES_TOPIC + " received: " + shoesValues);
+
+        List<Purchase> fragrancesValues = MockDataProducer.convertFromJson(
+                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
+                        consumerConfig,
+                        FRAGRANCES_TOPIC,
+                        Math.toIntExact(fragrancesNumberOfRecords)),
+                Purchase.class);
+
+        System.out.println(FRAGRANCES_TOPIC + " received: " + fragrancesValues);
+
+        assertThat("number of shoes", shoesValues.stream().count(), greaterThan(0L));
+
+        shoesValues.stream().forEach(v -> assertThat(
+                v.getDepartment(),
+                equalToIgnoringCase("shoes"))
+        );
+
+        assertThat("number of fragrances", fragrancesValues.stream().count(), greaterThan(0L));
+
+        fragrancesValues.stream().forEach(v -> assertThat(
+                v.getDepartment(),
+                equalToIgnoringCase("fragrance"))
+        );
+
+    }
 
 }
