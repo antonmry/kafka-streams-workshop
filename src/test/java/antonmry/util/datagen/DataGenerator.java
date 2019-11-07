@@ -59,9 +59,9 @@ public class DataGenerator {
                     .zipCode(store.zipCode).storeId(store.storeId).build();
 
 
-            if (purchase.getDepartment().toLowerCase().contains("electronics")) {
-                Purchase cafePurchase = generateCafePurchase(purchase, faker);
-                purchases.add(cafePurchase);
+            if (purchase.getDepartment().toLowerCase().contains("shoes")) {
+                Purchase fragrancePurchase= generateFragrancePurchase(purchase, faker);
+                purchases.add(fragrancePurchase);
             }
             purchases.add(purchase);
         }
@@ -70,13 +70,13 @@ public class DataGenerator {
 
     }
 
-    private static Purchase generateCafePurchase(Purchase purchase, Faker faker) {
+    private static Purchase generateFragrancePurchase(Purchase purchase, Faker faker) {
         Date date = purchase.getPurchaseDate();
         Instant adjusted = date.toInstant().minus(faker.number().numberBetween(5, 18), ChronoUnit.MINUTES);
         Date cafeDate = Date.from(adjusted);
 
-        return Purchase.builder(purchase).department("Coffee")
-                .itemPurchased(faker.options().option("Mocha", "Mild Roast", "Red-Eye", "Dark Roast"))
+        return Purchase.builder(purchase).department("Fragrance")
+                .itemPurchased(faker.options().option("Roses", "Fresh", "Red-Eye", "Dark"))
                 .price(Double.parseDouble(faker.commerce().price(3.00, 6.00))).quanity(1).purchaseDate(cafeDate).build();
 
     }
@@ -113,7 +113,7 @@ public class DataGenerator {
         List<Store> stores = new ArrayList<>(NUMBER_UNIQUE_STORES);
         Faker faker = new Faker();
         for (int i = 0; i < NUMBER_UNIQUE_STORES; i++) {
-            String department = (i % 5 == 0) ? "Electronics" : faker.commerce().department();
+            String department = (i % 5 == 0) ? "Shoes" : faker.commerce().department();
             String employeeId = Long.toString(faker.number().randomNumber(5, false));
             String zipCode = faker.options().option("47197-9482", "97666", "113469", "334457");
             String storeId = Long.toString(faker.number().randomNumber(6, true));

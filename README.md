@@ -69,7 +69,7 @@ Next steps:
 
 0. Open `src/test/java/antonmry/exercise_1/KafkaStreamsIntegrationTest1.java` and investigate how an integration test
 is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
-1. Open `src/main/java/antonmry/exercise_1/KafkaStreamsApp0.java` and complete with the proper code the places indicated 
+1. Open `src/main/java/antonmry/exercise_1/KafkaStreamsApp1.java` and complete with the proper code the places indicated 
 with a TODO comment (except the optional).
 2. Open `src/main/java/antonmry/model/PurchasePattern.java` and complete with the proper code the places indicated 
 with a TODO comment. 
@@ -89,6 +89,40 @@ Linux:
 
 Done? Do you have time yet? Try with the optional part: improve performance changing from JSON to Avro serialization. 
 See the [official documentation](https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro).
+
+### Exercise 2: filtering, branching and adding keys
+
+You rock and your managers know it now... more requirements are coming. Let's see if we can keep this level of productivity. Requirements:
+
+- Because fragrances and shoes belongs to specific brands (modeled as departments), they need access their respective
+purchases information in real-time.
+- Business managers don't have interest in purchases smaller than 5.0 € and filter them seems a lot of work for them so 
+they asked  you to do it.
+-  A new team discovered the information you are making available and they started to using it for a cool new use case. 
+But there is a problem: they need a key which it doesn't exist right now. Could you add it?
+
+Next steps:
+
+0. Open `src/test/java/antonmry/exercise_2/KafkaStreamsIntegrationTest2.java` and investigate how an integration test
+is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+1. Open `src/main/java/antonmry/exercise_2/KafkaStreamsApp2.java` and complete with the proper code the places indicated 
+with a TODO comment (except the optional).
+2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
+do it also from command line:
+
+Windows:
+```
+./gradlew.bat test --tests KafkaStreamsIntegrationTest2
+```
+Linux:
+```
+./gradlew test --tests KafkaStreamsIntegrationTest2
+```
+
+Done? Do you have time yet? Try with the optional part: 
+[setup Kafka in your local environment using Docker](https://hub.docker.com/r/spotify/kafka/), launch the Kstream of the
+ first exercise (using the gradle task runExercise0) and ingest in Kafka using 
+ [kafkcat](https://github.com/edenhill/kafkacat). 
 
 ## Acknowledgements
 
