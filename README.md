@@ -132,8 +132,8 @@ Done? Do you have time yet? Try with the optional part:
 You've delivered the previous requirements, everything is working well and nobody wakes up in the night because the
 service isn't working properly. It isn't the same for the colleague who share desk with you. It seems the rewarding
 system has some problems and it's generating a lot of problems. Basically they are aggregating the information from 
-Kafka to calculate the fields `totalRewardPoints` and `daysFromLastPurchase` based in the previous purchases. 
-The rate is quite high so the updates of the aggregated purchase generate a lot of blocking threads in the database.
+Kafka to calculate the field `totalRewardPoints` based in the previous purchases. The rate is quite high so the updates 
+of the aggregated purchase generate a lot of blocking threads in the database.
 
 You would like to help your colleague and you remember something called state stores in kafka. Let's discover if it could
 make the process easier.
