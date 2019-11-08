@@ -101,8 +101,8 @@ public class KafkaStreamsApp3 {
         // TODO: ingest the previous Stream in the "rewards" topic
         statefulRewardAccumulator.to("rewards", Produced.with(stringSerde, rewardAccumulatorSerde));
 
-        // TODO (OPTIONAL):
-
+        // TODO (OPTIONAL): investigate the advantage of `transformValues` over `transform` and configure the state
+        // store to have a change log stored in a topic.
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
     }

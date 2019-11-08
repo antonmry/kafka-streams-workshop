@@ -161,7 +161,7 @@ Linux:
 ```
 
 Done? Do you have time yet? Try with the optional part: investigate what's the advantage of `transformValues` over
-`transform`. 
+`transform` and configure the state store to have a change log stored in a topic. 
 
 ## Acknowledgements
 
