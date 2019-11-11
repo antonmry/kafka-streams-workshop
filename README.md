@@ -181,6 +181,8 @@ Next steps:
 
 0. Open `src/test/java/antonmry/exercise_4/KafkaStreamsIntegrationTest4.java` and investigate how an integration test
 is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+2. Edit `src/main/java/antonmry/exercise_4/joiner/PurchaseJoiner.java` and complete the
+TODO to combine both purchases.
 1. Edit `src/main/java/antonmry/exercise_4/KafkaStreamsApp4.java` and complete with the proper code the places indicated 
 with a TODO comment (except the optional).
 2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
@@ -198,11 +200,15 @@ Linux:
 
 Done? Do you have time yet? Try with the optional part:
 
-TODO!!
+1. Modify the window to keep the twenty minutes but having order so we make sure the
+shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase.
+
+2. For the join window you are using the timestamp placed in the metadata when the
+ event is added to the log but this isn't exactly the requirement. Adapt the code to
+  use the purchaseDate inside the event. See the 
+  [TimeExtractor official doc](https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/processor/TimestampExtractor.html) 
+  for more information.
  
-
-
-
 ## Acknowledgements
 
 This workshop content and source code has been heavily inspired by `Kafka Streams in Action`. If you really want to 

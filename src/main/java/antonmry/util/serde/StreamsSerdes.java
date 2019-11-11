@@ -42,6 +42,12 @@ public class StreamsSerdes {
         }
     }
 
+    public static final class CorrelatedPurchaseSerde extends WrapperSerde<CorrelatedPurchase> {
+        public CorrelatedPurchaseSerde() {
+            super(new JsonSerializer<>(), new JsonDeserializer<>(CorrelatedPurchase.class));
+        }
+    }
+
     private static class WrapperSerde<T> implements Serde<T> {
 
         private JsonSerializer<T> serializer;
