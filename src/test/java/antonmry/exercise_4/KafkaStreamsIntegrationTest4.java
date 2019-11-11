@@ -1,9 +1,9 @@
-package antonmry.exercise_2;
+package antonmry.exercise_4;
 
 import antonmry.clients.producer.MockDataProducer;
-import antonmry.exercise_1.KafkaStreamsApp1;
+import antonmry.exercise_4.KafkaStreamsApp4;
+import antonmry.model.CorrelatedPurchase;
 import antonmry.model.Purchase;
-import antonmry.model.PurchasePattern;
 import antonmry.model.RewardAccumulator;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -21,15 +21,15 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.junit.Assert.assertThat;
 
-public class KafkaStreamsIntegrationTest2 {
+public class KafkaStreamsIntegrationTest4 {
 
     private static final int NUM_BROKERS = 1;
     private static final String STRING_SERDE_CLASSNAME = Serdes.String().getClass().getName();
 
-    private static KafkaStreamsApp2 kafkaStreamsApp;
+    private static KafkaStreamsApp4 kafkaStreamsApp;
     private static Properties producerConfig;
     private static Properties consumerConfig;
 
@@ -39,6 +39,7 @@ public class KafkaStreamsIntegrationTest2 {
     private static final String REWARDS_TOPIC = "rewards";
     private static final String SHOES_TOPIC = "shoes";
     private static final String FRAGRANCES_TOPIC = "fragrances";
+    private static final String SHOES_AND_FRAGANCES_TOPIC = "shoesAndFragrancesAlerts";
 
     @ClassRule
     public static final EmbeddedKafkaCluster EMBEDDED_KAFKA = new EmbeddedKafkaCluster(NUM_BROKERS);
@@ -58,7 +59,7 @@ public class KafkaStreamsIntegrationTest2 {
 
         properties.put(IntegrationTestUtils.INTERNAL_LEAVE_GROUP_ON_CLOSE, true);
 
-        kafkaStreamsApp = new KafkaStreamsApp2(properties);
+        kafkaStreamsApp = new KafkaStreamsApp4(properties);
         kafkaStreamsApp.start();
 
         producerConfig = TestUtils.producerConfig(EMBEDDED_KAFKA.bootstrapServers(),
@@ -78,43 +79,6 @@ public class KafkaStreamsIntegrationTest2 {
     }
 
     @Test
-    public void maskCreditCardsAndFilterSmallPurchases() throws Exception {
-
-        int expectedNumberOfRecords = 100;
-
-        List<Purchase> previousValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        TRANSACTIONS_TOPIC,
-                        expectedNumberOfRecords),
-                Purchase.class);
-
-        System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
-        long filteredNumberOfRecords = previousValues.stream().filter(v -> v.getPrice() > 5.0).count();
-
-        List<Purchase> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PURCHASES_TOPIC,
-                        Math.toIntExact(filteredNumberOfRecords)),
-                Purchase.class);
-
-        System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getCreditCardNumber(),
-                matchesPattern("xxxx-xxxx-xxxx-\\d\\d\\d\\d")
-        ));
-
-        assertEquals(filteredNumberOfRecords, actualValues.stream().count());
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getPrice(),
-                greaterThan(5.0)
-        ));
-    }
-
-    @Test
     public void branchShoesAndFragances() throws Exception {
 
         int expectedNumberOfRecords = 100;
@@ -127,6 +91,7 @@ public class KafkaStreamsIntegrationTest2 {
                 Purchase.class);
 
         System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
+        System.out.println(TRANSACTIONS_TOPIC + " count: " + previousValues.stream().count());
 
         long shoesNumberOfRecords = previousValues.stream()
                 .filter(v -> v.getPrice() > 5.0)
@@ -146,6 +111,7 @@ public class KafkaStreamsIntegrationTest2 {
                 Purchase.class);
 
         System.out.println(SHOES_TOPIC + " received: " + shoesValues);
+        System.out.println(SHOES_TOPIC + " count: " + shoesValues.stream().count());
 
         List<Purchase> fragrancesValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
@@ -155,6 +121,7 @@ public class KafkaStreamsIntegrationTest2 {
                 Purchase.class);
 
         System.out.println(FRAGRANCES_TOPIC + " received: " + fragrancesValues);
+        System.out.println(FRAGRANCES_TOPIC + " count: " + fragrancesValues.stream().count());
 
         assertThat("number of shoes", shoesValues.stream().count(), greaterThan(0L));
 
@@ -169,7 +136,43 @@ public class KafkaStreamsIntegrationTest2 {
                 v.getDepartment(),
                 equalToIgnoringCase("fragrance"))
         );
-
     }
 
+    @Test
+    public void joinShoesAndFragances() throws Exception {
+
+        int expectedNumberOfRecords = 20;
+
+        List<CorrelatedPurchase> previousValues = MockDataProducer.convertFromJson(
+                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
+                        consumerConfig,
+                        SHOES_AND_FRAGANCES_TOPIC,
+                        expectedNumberOfRecords),
+                CorrelatedPurchase.class);
+
+        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " received: " + previousValues);
+        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " count: " + previousValues.stream().count());
+
+        assertThat(previousValues.stream().count(), greaterThan(1L));
+
+        previousValues.stream().forEach(v -> assertThat(
+                v.getCustomerId(),
+                notNullValue())
+        );
+
+        previousValues.stream().forEach(v -> assertThat(
+                v.getFirstPurchaseTime(),
+                notNullValue())
+        );
+
+        previousValues.stream().forEach(v -> assertThat(
+                v.getSecondPurchaseTime(),
+                notNullValue())
+        );
+
+        previousValues.stream().forEach(v -> assertThat(
+                v.getItemsPurchased().stream().count(),
+                greaterThan(1L))
+        );
+    }
 }

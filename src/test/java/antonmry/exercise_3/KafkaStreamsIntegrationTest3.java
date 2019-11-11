@@ -78,64 +78,6 @@ public class KafkaStreamsIntegrationTest3 {
     }
 
     @Test
-    public void maskCreditCardsAndFilterSmallPurchases() throws Exception {
-
-        int expectedNumberOfRecords = 100;
-
-        List<Purchase> previousValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        TRANSACTIONS_TOPIC,
-                        expectedNumberOfRecords),
-                Purchase.class);
-
-        System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
-        long filteredNumberOfRecords = previousValues.stream().filter(v -> v.getPrice() > 5.0).count();
-
-        List<Purchase> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PURCHASES_TOPIC,
-                        Math.toIntExact(filteredNumberOfRecords)),
-                Purchase.class);
-
-        System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getCreditCardNumber(),
-                matchesPattern("xxxx-xxxx-xxxx-\\d\\d\\d\\d")
-        ));
-
-        assertEquals(filteredNumberOfRecords, actualValues.stream().count());
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getPrice(),
-                greaterThan(5.0)
-        ));
-    }
-
-    @Test
-    public void testPurchasePatterns() throws Exception {
-
-        int expectedNumberOfRecords = 100;
-        List<PurchasePattern> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PATTERNS_TOPIC,
-                        expectedNumberOfRecords),
-                PurchasePattern.class);
-
-        System.out.println(PATTERNS_TOPIC + " received: " + actualValues);
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getZipCode(), not(isEmptyString())));
-        actualValues.stream().forEach(v -> assertThat(
-                v.getItem(), not(isEmptyString())));
-        actualValues.stream().forEach(v -> assertThat(
-                v.getAmount(), greaterThan(0.0)));
-    }
-
-    @Test
     public void testRewardsAccumulator() throws Exception {
 
         int expectedNumberOfRecords = 100;
@@ -157,66 +99,11 @@ public class KafkaStreamsIntegrationTest3 {
         ));
 
         actualValues.stream().forEach(v -> assertThat(
-                v.getPurchaseTotal(), greaterThan(0.0)
+                v.getCurrentRewardPoints(), greaterThan(0)
         ));
-    }
 
-    @Test
-    public void branchShoesAndFragances() throws Exception {
-
-        int expectedNumberOfRecords = 100;
-
-        List<Purchase> previousValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        TRANSACTIONS_TOPIC,
-                        expectedNumberOfRecords),
-                Purchase.class);
-
-        System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
-
-        long shoesNumberOfRecords = previousValues.stream()
-                .filter(v -> v.getPrice() > 5.0)
-                .filter(v -> v.getDepartment().equalsIgnoreCase("shoes"))
-                .count();
-
-        long fragrancesNumberOfRecords = previousValues.stream()
-                .filter(v -> v.getPrice() > 5.0)
-                .filter(v -> v.getDepartment().equalsIgnoreCase("fragrance"))
-                .count();
-
-        List<Purchase> shoesValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        SHOES_TOPIC,
-                        Math.toIntExact(shoesNumberOfRecords)),
-                Purchase.class);
-
-        System.out.println(SHOES_TOPIC + " received: " + shoesValues);
-
-        List<Purchase> fragrancesValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        FRAGRANCES_TOPIC,
-                        Math.toIntExact(fragrancesNumberOfRecords)),
-                Purchase.class);
-
-        System.out.println(FRAGRANCES_TOPIC + " received: " + fragrancesValues);
-
-        assertThat("number of shoes", shoesValues.stream().count(), greaterThan(0L));
-
-        shoesValues.stream().forEach(v -> assertThat(
-                v.getDepartment(),
-                equalToIgnoringCase("shoes"))
-        );
-
-        assertThat("number of fragrances", fragrancesValues.stream().count(), greaterThan(0L));
-
-        fragrancesValues.stream().forEach(v -> assertThat(
-                v.getDepartment(),
-                equalToIgnoringCase("fragrance"))
-        );
-
+        assertThat(actualValues.stream().filter(v -> v.getCurrentRewardPoints() < v.getTotalRewardPoints()).count(),
+                greaterThan(1L));
     }
 
 }
