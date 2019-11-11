@@ -163,6 +163,46 @@ Linux:
 Done? Do you have time yet? Try with the optional part: investigate what's the advantage of `transformValues` over
 `transform` and configure the state store to have a change log stored in a topic. 
 
+### Exercise 4: joins 
+
+It seems you have become the hero of the office with the ability to add status to your Kafka streams and store
+information for the long-term. Your skills have spread to other departments and now you spend your days in meetings
+with internal customers asking for no-sense implementations in Kafka. Welcome to fame!
+
+One of those requirements is quite special. They would like to identify customers who buy shoes and fragrances with
+less of 20 minutes of difference. The marketing department is quite sure that type of customer is preparing for
+something special and it should be quite easier to inform of new items which would be of high interest for them.
+
+You think about this specific requirement: the purchases of fragrances and shoes are currently available in real-time
+in their respective topics and you already know how to store state of your steams. It should be possible, righ?
+Let's figure out how to do it!
+
+Next steps:
+
+0. Open `src/test/java/antonmry/exercise_4/KafkaStreamsIntegrationTest4.java` and investigate how an integration test
+is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+1. Edit `src/main/java/antonmry/exercise_4/KafkaStreamsApp4.java` and complete with the proper code the places indicated 
+with a TODO comment (except the optional).
+2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
+do it also from command line:
+
+Windows:
+```
+./gradlew.bat test --tests KafkaStreamsIntegrationTest4
+```
+
+Linux:
+```
+./gradlew test --tests KafkaStreamsIntegrationTest4
+```
+
+Done? Do you have time yet? Try with the optional part:
+
+TODO!!
+ 
+
+
+
 ## Acknowledgements
 
 This workshop content and source code has been heavily inspired by `Kafka Streams in Action`. If you really want to 
@@ -176,7 +216,7 @@ a look to [the Github repo with the source code](https://github.com/bbejeck/kafk
 - Exercise 1: topology      -     15 min
 - Exercise 2: branch        -     15 min (1 hour)
 - Exercise 3: state store   -     15 min
-- Exercise 4                -     15 min
+- Exercise 4: joins         -     15 min
 - Exercise 5                -     15 min
 - Summary (optional)        -     15 min (2 hours)
 
