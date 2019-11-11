@@ -71,27 +71,6 @@ public class KafkaStreamsIntegrationTest1 {
     }
 
     @Test
-    public void maskCreditCards() throws Exception {
-
-        int expectedNumberOfRecords = 100;
-        List<Purchase> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PURCHASES_TOPIC,
-                        expectedNumberOfRecords),
-                Purchase.class);
-
-        System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
-
-        actualValues
-                .stream()
-                .forEach(v -> assertThat(
-                        v.getCreditCardNumber(),
-                        matchesPattern("xxxx-xxxx-xxxx-\\d\\d\\d\\d")
-                ));
-    }
-
-    @Test
     public void testPurchasePatterns() throws Exception {
 
         int expectedNumberOfRecords = 100;

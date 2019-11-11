@@ -115,53 +115,6 @@ public class KafkaStreamsIntegrationTest2 {
     }
 
     @Test
-    public void testPurchasePatterns() throws Exception {
-
-        int expectedNumberOfRecords = 100;
-        List<PurchasePattern> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PATTERNS_TOPIC,
-                        expectedNumberOfRecords),
-                PurchasePattern.class);
-
-        System.out.println(PATTERNS_TOPIC + " received: " + actualValues);
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getZipCode(), not(isEmptyString())));
-        actualValues.stream().forEach(v -> assertThat(
-                v.getItem(), not(isEmptyString())));
-        actualValues.stream().forEach(v -> assertThat(
-                v.getAmount(), greaterThan(0.0)));
-    }
-
-    @Test
-    public void testRewardsAccumulator() throws Exception {
-
-        int expectedNumberOfRecords = 100;
-        List<RewardAccumulator> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        REWARDS_TOPIC,
-                        expectedNumberOfRecords),
-                RewardAccumulator.class);
-
-        System.out.println(REWARDS_TOPIC + " received: " + actualValues);
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getCustomerId(),
-                matchesPattern(".*,.*")));
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getPurchaseTotal(), greaterThan(0.0)
-        ));
-
-        actualValues.stream().forEach(v -> assertThat(
-                v.getPurchaseTotal(), greaterThan(0.0)
-        ));
-    }
-
-    @Test
     public void branchShoesAndFragances() throws Exception {
 
         int expectedNumberOfRecords = 100;

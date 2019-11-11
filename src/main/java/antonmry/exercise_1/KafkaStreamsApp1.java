@@ -55,7 +55,7 @@ public class KafkaStreamsApp1 {
         // TODO: ingest in the topic "patterns" using the purchasePattern serde
         patternKStream.to("patterns", Produced.with(stringSerde, purchasePatternSerde));
 
-        // TODO: create a rewarddAccumulator KStream
+        // TODO: create a rewardAccumulator KStream
         KStream<String, RewardAccumulator> rewardsKStream = purchaseKStream.
                 mapValues(purchase -> RewardAccumulator.builder(purchase).build());
 
