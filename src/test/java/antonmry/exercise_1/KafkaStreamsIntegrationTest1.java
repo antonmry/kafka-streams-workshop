@@ -113,8 +113,9 @@ public class KafkaStreamsIntegrationTest1 {
         ));
 
         actualValues.stream().forEach(v -> assertThat(
-                v.getPurchaseTotal(), greaterThan(0.0)
+                v.getCurrentRewardPoints(), greaterThan(0)
         ));
+
     }
 
 
