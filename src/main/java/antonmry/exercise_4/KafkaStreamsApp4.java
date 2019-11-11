@@ -122,6 +122,8 @@ public class KafkaStreamsApp4 {
         // TODO: ingest the join KStream in the topic "shoesAndFragrancesAlerts"
         joinedKStream.to("shoesAndFragrancesAlerts", Produced.with(stringSerde, correlatedPurchaseSerde));
 
+        // TODO (OPTIONAL): How many state stores are created because of the join?
+
         // TODO (OPTIONAL): modify the window to keep the twenty minutes but having order so we make sure the
         // shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase
 
