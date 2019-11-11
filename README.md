@@ -61,7 +61,9 @@ Wow! Your managers are quite surprised with how fast you solved the credit card 
 the Kafka platform and your skills and they want take advantage of both of them. More requirements are coming! 
 
 - A new rewarding system is going to be deployed and it needs information about the purchases to determine the rewards.
-It will read this information from a topic `rewards`.
+It will read this information from a topic `rewards`. The customer earns a point per euro, and transaction totals are 
+rounded down to the nearest euro. Fields `totalRewardPoints` and `daysFromLastPurchase` should be empty or with any 
+value.
 - Some important business people would like to be able to identify purchases patterns in real-time. A new service of 
 reporting has been deployed but we need to feed it with the information. It will read from a topic `PurchasePattern`.
 
@@ -92,7 +94,8 @@ See the [official documentation](https://docs.confluent.io/current/streams/devel
 
 ### Exercise 2: filtering, branching and adding keys
 
-You rock and your managers know it now... more requirements are coming. Let's see if we can keep this level of productivity. Requirements:
+You rock and your managers know it now... more requirements are coming. Let's see if we can keep this level of 
+productivity. Requirements:
 
 - Because fragrances and shoes belongs to specific brands (modeled as departments), they need access their respective
 purchases information in real-time.
@@ -124,13 +127,62 @@ Done? Do you have time yet? Try with the optional part:
  first exercise (using the gradle task runExercise0) and ingest in Kafka using 
  [kafkcat](https://github.com/edenhill/kafkacat). 
 
+### Exercise 3: state stores
+
+You've delivered the previous requirements, everything is working well and nobody wakes up in the night because the
+service isn't working properly. It isn't the same for the colleague who share desk with you. It seems the rewarding
+system has some problems and it's generating a lot of problems. Basically they are aggregating the information from 
+Kafka to calculate the field `totalRewardPoints` based in the previous purchases. The rate is quite high so the updates 
+of the aggregated purchase generate a lot of blocking threads in the database.
+
+You would like to help your colleague and you remember something called state stores in kafka. Let's discover if it could
+make the process easier.
+
+Next steps:
+
+0. Open `src/test/java/antonmry/exercise_3/KafkaStreamsIntegrationTest3.java` and investigate how an integration test
+is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+1. Edit `src/main/java/antonmry/exercise_3/partitioner/RewardsStreamPartitioner.java` to establish the partitions of the
+state store.
+2. Open `src/main/java/antonmry/exercise_3/transformer/PurchaseRewardTransformer.java` to add your aggregations.
+3. Edit `src/main/java/antonmry/exercise_3/KafkaStreamsApp3.java` and complete with the proper code the places indicated 
+with a TODO comment (except the optional).
+4. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
+do it also from command line:
+
+Windows:
+```
+./gradlew.bat test --tests KafkaStreamsIntegrationTest3
+```
+
+Linux:
+```
+./gradlew test --tests KafkaStreamsIntegrationTest3
+```
+
+Done? Do you have time yet? Try with the optional part: investigate what's the advantage of `transformValues` over
+`transform` and configure the state store to have a change log stored in a topic. 
+
 ## Acknowledgements
 
 This workshop content and source code has been heavily inspired by `Kafka Streams in Action`. If you really want to 
 learn Kafka Streams we encourage you to buy [the book](https://www.manning.com/books/kafka-streams-in-action) and take 
 a look to [the Github repo with the source code](https://github.com/bbejeck/kafka-streams-in-action).
 
+## Agenda
+
+- Introduction to Kafka     -     15 min
+- Exercise 0: stream        -     15 min
+- Exercise 1: topology      -     15 min
+- Exercise 2: branch        -     15 min (1 hour)
+- Exercise 3: state store   -     15 min
+- Exercise 4                -     15 min
+- Exercise 5                -     15 min
+- Summary (optional)        -     15 min (2 hours)
+
+
 ## TODO
 
+- [ ] Topology graphs
 - [ ] Delete no needed dependencies
 - [ ] Update Kafka version

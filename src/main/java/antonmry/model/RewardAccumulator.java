@@ -73,7 +73,9 @@ public class RewardAccumulator {
         return result;
     }
 
-    public static Builder builder(Purchase purchase){return new Builder(purchase);}
+    public static Builder builder(Purchase purchase) {
+        return new Builder(purchase);
+    }
 
     public static final class Builder {
         private String customerId;
@@ -81,20 +83,20 @@ public class RewardAccumulator {
         private int daysFromLastPurchase;
         private int rewardPoints;
 
-        private Builder(Purchase purchase){
+        private Builder(Purchase purchase) {
 
-            // TODO:
-           this.customerId = purchase.getLastName()+","+purchase.getFirstName();
+            // TODO: assign customerId using the first and the last name
+            this.customerId = purchase.getLastName() + "," + purchase.getFirstName();
 
-           // TODO:
-           this.purchaseTotal = purchase.getPrice() * (double) purchase.getQuantity();
+            // TODO: assign purchaseTotal based in the price and quantity
+            this.purchaseTotal = purchase.getPrice() * (double) purchase.getQuantity();
 
-           // TODO:
-           this.rewardPoints = (int) purchaseTotal;
+            // TODO: the customer earns a point per euro, and transaction totals are rounded down to the nearest euro
+            this.rewardPoints = (int) purchaseTotal;
         }
 
 
-        public RewardAccumulator build(){
+        public RewardAccumulator build() {
             return new RewardAccumulator(customerId, purchaseTotal, rewardPoints);
         }
 
