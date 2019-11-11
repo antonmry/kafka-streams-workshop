@@ -50,6 +50,9 @@ public class KafkaStreamsIntegrationTest4 {
         EMBEDDED_KAFKA.createTopic(PURCHASES_TOPIC);
         EMBEDDED_KAFKA.createTopic(PATTERNS_TOPIC);
         EMBEDDED_KAFKA.createTopic(REWARDS_TOPIC);
+        EMBEDDED_KAFKA.createTopic(SHOES_TOPIC);
+        EMBEDDED_KAFKA.createTopic(FRAGRANCES_TOPIC);
+        EMBEDDED_KAFKA.createTopic(SHOES_AND_FRAGANCES_TOPIC);
 
         Properties properties = StreamsTestUtils.getStreamsConfig("integrationTest",
                 EMBEDDED_KAFKA.bootstrapServers(),
