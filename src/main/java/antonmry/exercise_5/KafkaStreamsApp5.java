@@ -11,19 +11,15 @@ import antonmry.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.Consumed;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
-import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
-import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.StoreBuilder;
-import org.apache.kafka.streams.state.Stores;
+import org.apache.kafka.streams.state.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 public class KafkaStreamsApp5 {
@@ -114,11 +110,35 @@ public class KafkaStreamsApp5 {
 
         joinedKStream.to("shoesAndFragrancesAlerts", Produced.with(stringSerde, correlatedPurchaseSerde));
 
-        // TODO:
-        KTable<String, Purchase> purchaseKTable = streamsBuilder.table("purchases");
-        purchaseKTable.toStream().to("purchases-table");
+        // TODO: ingest the purchaseKStream to a new topic "customer_detection"
+        purchaseKStream
+                .selectKey((k, v) -> v.getCustomerId())
+                .to("customer_detection", Produced.with(stringSerde, purchaseSerde));
+
+        // TODO: create a new in Memory KeyValue Store with name "customers"
+        KeyValueBytesStoreSupplier storeCustomerSupplier = Stores.inMemoryKeyValueStore("customers");
+
+        // TODO: create the new KTable based in the previous topic and event store
+        streamsBuilder.table(
+                "customer_detection",
+                Materialized.<String, Purchase>as(storeCustomerSupplier)
+                        .withKeySerde(stringSerde)
+                        .withValueSerde(purchaseSerde)
+        );
+
+        // TODO (Optional): expose the State Store using a REST API
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+    }
+
+    public KeyValueIterator<String, Purchase> getCustomersTableRecords() {
+
+        // TODO: create a ReadOnlyKeyValueStore to read from the Event Store "customers"
+        ReadOnlyKeyValueStore<String, Purchase> keyValueStore =
+                this.kafkaStreams.store("customers", QueryableStoreTypes.keyValueStore());
+
+        // TODO: return all the records
+        return keyValueStore.all();
     }
 
     void start() {
