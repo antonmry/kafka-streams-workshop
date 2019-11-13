@@ -30,6 +30,12 @@ public class KafkaStreamsApp4 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp4.class);
 
+    public String getTopology() {
+        return topology;
+    }
+
+    private final String topology;
+
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp4(Properties properties) {
@@ -132,6 +138,7 @@ public class KafkaStreamsApp4 {
         // event.
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.topology = streamsBuilder.build().describe().toString();
     }
 
     void start() {

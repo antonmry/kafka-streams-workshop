@@ -178,4 +178,10 @@ public class KafkaStreamsIntegrationTest4 {
                 greaterThan(1L))
         );
     }
+
+    @Test
+    public void printTopology() throws Exception {
+        System.out.println(kafkaStreamsApp.getTopology());
+    }
+
 }

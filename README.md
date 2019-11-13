@@ -56,6 +56,10 @@ Linux:
 Done? Do you have time yet? Try with the optional part: write some unit tests. See the 
 [official documentation](https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html). 
 
+Topology: 
+
+![Topology](./images/topology0.png)
+
 ### Exercise 1: build a topology with several nodes
 
 Wow! Your managers are quite surprised with how fast you solved the credit card numbers issue. They see the potential of
@@ -94,6 +98,10 @@ Linux:
 Done? Do you have time yet? Try with the optional part: improve performance changing from JSON to Avro serialization. 
 See the [official documentation](https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro).
 
+Topology: 
+
+![Topology](./images/topology1.png)
+
 ### Exercise 2: filtering, branching and adding keys
 
 You rock and your managers know it now... more requirements are coming. Let's see if we can keep this level of 
@@ -130,6 +138,10 @@ Done? Do you have time yet? Try with the optional part:
  first exercise (using the gradle task runExercise0) and ingest in Kafka using 
  [kafkcat](https://github.com/edenhill/kafkacat). 
 
+Topology: 
+
+![Topology](./images/topology2.png)
+
 ### Exercise 3: state stores
 
 You've delivered the previous requirements, everything is working well and nobody wakes up in the night because the
@@ -164,6 +176,10 @@ Linux:
 
 Done? Do you have time yet? Try with the optional part: investigate what's the advantage of `transformValues` over
 `transform` and configure the state store to have a change log stored in a topic. 
+
+Topology: 
+
+![Topology](./images/topology3.png)
 
 ### Exercise 4: joins 
 
@@ -212,6 +228,10 @@ shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase.
   [TimeExtractor official doc](https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/processor/TimestampExtractor.html) 
   for more information.
  
+Topology: 
+
+![Topology](./images/topology4.png)
+
 ### Exercise 5: ktable and queryable event stores
 
 The security teams has approached you with a weird requirement. They want to have access
@@ -241,6 +261,10 @@ Linux:
 ```
 
 Done? Do you have time yet? Try with the optional part: implement the real REST API using your favorite framework.
+
+Topology: 
+
+![Topology](./images/topology5.png)
   
 ## Acknowledgements
 
@@ -262,6 +286,5 @@ a look to [the Github repo with the source code](https://github.com/bbejeck/kafk
 
 ## TODO
 
-- [ ] Topology graphs
 - [ ] Delete no needed dependencies
 - [ ] Update Kafka version

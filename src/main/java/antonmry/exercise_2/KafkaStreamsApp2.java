@@ -22,6 +22,12 @@ public class KafkaStreamsApp2 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp2.class);
 
+    public String getTopology() {
+        return topology;
+    }
+
+    private final String topology;
+
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp2(Properties properties) {
@@ -85,6 +91,7 @@ public class KafkaStreamsApp2 {
         // TODO (OPTIONAL): launch the application and try to ingest and read from the topics using kafkacat
         // https://github.com/edenhill/kafkacat
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.topology = streamsBuilder.build().describe().toString();
     }
 
     void start() {
