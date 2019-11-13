@@ -1,4 +1,4 @@
-package antonmry.solution_5.transformer;
+package antonmry.solution.transformer;
 
 import antonmry.model.Purchase;
 import antonmry.model.RewardAccumulator;

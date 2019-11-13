@@ -79,10 +79,10 @@ integration test is done with Kafka Streams and get familiarised with the test a
  of the messages.
 1. Open `src/main/java/antonmry/exercise_1/KafkaStreamsApp1.java` and complete with the proper code the places indicated 
 with a TODO comment (except the optional).
-2. Open `src/main/java/antonmry/model/PurchasePattern.java` and complete with the proper code the places indicated 
-with a TODO comment. 
-3. Open `src/main/java/antonmry/model/RewardAccumulator.java` and complete with the proper code the places indicated 
-with a TODO comment. 
+2. Open `src/main/java/antonmry/exercise_1/model/PurchasePattern.java` and complete with the proper code the places 
+indicated with a TODO comment. 
+3. Open `src/main/java/antonmry/exercise_1/model/RewardAccumulator.java` and complete with the proper code the places 
+indicated with a TODO comment. 
 4. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
 do it also from command line:
 

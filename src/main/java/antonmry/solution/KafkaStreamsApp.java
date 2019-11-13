@@ -1,12 +1,12 @@
-package antonmry.solution_5;
+package antonmry.solution;
 
 import antonmry.model.CorrelatedPurchase;
 import antonmry.model.Purchase;
 import antonmry.model.PurchasePattern;
 import antonmry.model.RewardAccumulator;
-import antonmry.solution_5.joiner.PurchaseJoiner;
-import antonmry.solution_5.partitioner.RewardsStreamPartitioner;
-import antonmry.solution_5.transformer.PurchaseRewardTransformer;
+import antonmry.solution.joiner.PurchaseJoiner;
+import antonmry.solution.partitioner.RewardsStreamPartitioner;
+import antonmry.solution.transformer.PurchaseRewardTransformer;
 import antonmry.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class KafkaStreamsApp5 {
+public class KafkaStreamsApp {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp5.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp.class);
 
     private KafkaStreams kafkaStreams;
 
@@ -32,7 +32,7 @@ public class KafkaStreamsApp5 {
 
     private String topology;
 
-    public KafkaStreamsApp5(Properties properties) {
+    public KafkaStreamsApp(Properties properties) {
 
         StreamsConfig streamsConfig = new StreamsConfig(properties);
 
@@ -151,7 +151,7 @@ public class KafkaStreamsApp5 {
     }
 
     public static void main(String[] args) throws Exception {
-        KafkaStreamsApp5 kafkaStreamsApp = new KafkaStreamsApp5(getProperties());
+        KafkaStreamsApp kafkaStreamsApp = new KafkaStreamsApp(getProperties());
         kafkaStreamsApp.start();
         Thread.sleep(65000);
         kafkaStreamsApp.stop();

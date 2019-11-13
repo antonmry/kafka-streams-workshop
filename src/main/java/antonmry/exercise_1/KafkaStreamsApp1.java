@@ -1,9 +1,9 @@
 package antonmry.exercise_1;
 
 import antonmry.model.Purchase;
-import antonmry.model.PurchasePattern;
-import antonmry.model.RewardAccumulator;
-import antonmry.util.serde.StreamsSerdes;
+import antonmry.exercise_1.model.PurchasePattern;
+import antonmry.exercise_1.model.RewardAccumulator;
+import antonmry.exercise_1.util.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;

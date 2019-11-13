@@ -1,4 +1,4 @@
-package antonmry.solution_5.partitioner;
+package antonmry.solution.partitioner;
 
 import antonmry.model.Purchase;
 import org.apache.kafka.streams.processor.StreamPartitioner;

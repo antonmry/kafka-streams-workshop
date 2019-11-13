@@ -55,6 +55,11 @@ task runExercise5(type: JavaExec) {
     main = "antonmry.exercise_5.KafkaStreamsApp5"
 }
 
+task runSolution(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "antonmry.solution.KafkaStreamsApp"
+}
+
 jar {
     archiveName = 'antonmry-kafka-streams-workshop-1.0-SNAPSHOT.jar'
 }

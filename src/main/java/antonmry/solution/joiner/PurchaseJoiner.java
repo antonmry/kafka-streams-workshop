@@ -1,4 +1,4 @@
-package antonmry.solution_5.joiner;
+package antonmry.solution.joiner;
 
 import antonmry.model.CorrelatedPurchase;
 import antonmry.model.Purchase;
