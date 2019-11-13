@@ -225,7 +225,7 @@ a look to [the Github repo with the source code](https://github.com/bbejeck/kafk
 - Exercise 2: branch        -     15 min (1 hour)
 - Exercise 3: state store   -     15 min
 - Exercise 4: joins         -     15 min
-- Exercise 5                -     15 min
+- Exercise 5: ktable        -     15 min
 - Summary (optional)        -     15 min (2 hours)
 
 
