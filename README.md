@@ -200,6 +200,8 @@ Linux:
 
 Done? Do you have time yet? Try with the optional part:
 
+0. How many state stores are created because of the join?
+
 1. Modify the window to keep the twenty minutes but having order so we make sure the
 shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase.
 
@@ -223,7 +225,7 @@ a look to [the Github repo with the source code](https://github.com/bbejeck/kafk
 - Exercise 2: branch        -     15 min (1 hour)
 - Exercise 3: state store   -     15 min
 - Exercise 4: joins         -     15 min
-- Exercise 5                -     15 min
+- Exercise 5: ktable        -     15 min
 - Summary (optional)        -     15 min (2 hours)
 
 

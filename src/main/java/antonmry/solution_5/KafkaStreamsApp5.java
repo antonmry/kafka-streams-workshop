@@ -1,38 +1,38 @@
-package antonmry.exercise_4;
+package antonmry.solution_5;
 
-import antonmry.exercise_4.joiner.PurchaseJoiner;
-import antonmry.exercise_4.partitioner.RewardsStreamPartitioner;
-import antonmry.exercise_4.transformer.PurchaseRewardTransformer;
 import antonmry.model.CorrelatedPurchase;
 import antonmry.model.Purchase;
 import antonmry.model.PurchasePattern;
 import antonmry.model.RewardAccumulator;
+import antonmry.solution_5.joiner.PurchaseJoiner;
+import antonmry.solution_5.partitioner.RewardsStreamPartitioner;
+import antonmry.solution_5.transformer.PurchaseRewardTransformer;
 import antonmry.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.Consumed;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
-import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
-import org.apache.kafka.streams.state.KeyValueStore;
-import org.apache.kafka.streams.state.StoreBuilder;
-import org.apache.kafka.streams.state.Stores;
+import org.apache.kafka.streams.state.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class KafkaStreamsApp4 {
+public class KafkaStreamsApp5 {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp4.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp5.class);
 
     private KafkaStreams kafkaStreams;
 
-    public KafkaStreamsApp4(Properties properties) {
+    public String getTopology() {
+        return topology;
+    }
+
+    private String topology;
+
+    public KafkaStreamsApp5(Properties properties) {
 
         StreamsConfig streamsConfig = new StreamsConfig(properties);
 
@@ -91,27 +91,20 @@ public class KafkaStreamsApp4 {
         Predicate<String, Purchase> isFragrance = (key, purchase) -> purchase.getDepartment()
                 .equalsIgnoreCase("fragrance");
 
-        // TODO: create the branch KStream using the customerId as key
         KStream<String, Purchase>[] branchesStream = purchaseKStream
                 .selectKey((k, v) -> v.getCustomerId())
                 .branch(isShoe, isFragrance);
 
-        // TODO: create the shoes KStream and the fragrances KStream
         KStream<String, Purchase> shoeStream = branchesStream[0];
         KStream<String, Purchase> fragranceStream = branchesStream[1];
 
-        // TODO: ingest the previous KStreams in topics "shoes" and "fragrances"
-        // Note: this step isn't required
         shoeStream.to("shoes", Produced.with(stringSerde, purchaseSerde));
         fragranceStream.to("fragrances", Produced.with(stringSerde, purchaseSerde));
 
-        // TODO: create a new instance of the PurchaseJoiner
         ValueJoiner<Purchase, Purchase, CorrelatedPurchase> purchaseJoiner = new PurchaseJoiner();
 
-        // TODO: create a twenty minute window
         JoinWindows twentyMinuteWindow = JoinWindows.of(60 * 1000 * 20);
 
-        // TODO: create the new join stream using the previously created joiner and window
         KStream<String, CorrelatedPurchase> joinedKStream = shoeStream.join(fragranceStream,
                 purchaseJoiner,
                 twentyMinuteWindow,
@@ -119,19 +112,31 @@ public class KafkaStreamsApp4 {
                         purchaseSerde,
                         purchaseSerde));
 
-        // TODO: ingest the join KStream in the topic "shoesAndFragrancesAlerts"
         joinedKStream.to("shoesAndFragrancesAlerts", Produced.with(stringSerde, correlatedPurchaseSerde));
 
-        // TODO (OPTIONAL): How many state stores are created because of the join?
+        purchaseKStream
+                .selectKey((k, v) -> v.getCustomerId())
+                .to("customer_detection", Produced.with(stringSerde, purchaseSerde));
 
-        // TODO (OPTIONAL): modify the window to keep the twenty minutes but having order so we make sure the
-        // shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase
+        KeyValueBytesStoreSupplier storeCustomerSupplier = Stores.inMemoryKeyValueStore("customers");
 
-        // TODO (OPTIONAL): for the join window you are using the timestamp placed in the metadata when the event is
-        // added to the log but this isn't exactly the requirement. Adapt the code to use the purchaseDate inside the
-        // event.
+        streamsBuilder.table(
+                "customer_detection",
+                Materialized.<String, Purchase>as(storeCustomerSupplier)
+                        .withKeySerde(stringSerde)
+                        .withValueSerde(purchaseSerde)
+        );
 
+        this.topology = streamsBuilder.build().describe().toString();
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+    }
+
+    public KeyValueIterator<String, Purchase> getCustomersTableRecords() {
+
+        ReadOnlyKeyValueStore<String, Purchase> keyValueStore =
+                this.kafkaStreams.store("customers", QueryableStoreTypes.keyValueStore());
+
+        return keyValueStore.all();
     }
 
     void start() {
@@ -146,7 +151,7 @@ public class KafkaStreamsApp4 {
     }
 
     public static void main(String[] args) throws Exception {
-        KafkaStreamsApp4 kafkaStreamsApp = new KafkaStreamsApp4(getProperties());
+        KafkaStreamsApp5 kafkaStreamsApp = new KafkaStreamsApp5(getProperties());
         kafkaStreamsApp.start();
         Thread.sleep(65000);
         kafkaStreamsApp.stop();

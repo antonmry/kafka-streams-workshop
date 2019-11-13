@@ -35,8 +35,6 @@ public class KafkaStreamsIntegrationTest2 {
 
     private static final String TRANSACTIONS_TOPIC = "transactions";
     private static final String PURCHASES_TOPIC = "purchases";
-    private static final String PATTERNS_TOPIC = "patterns";
-    private static final String REWARDS_TOPIC = "rewards";
     private static final String SHOES_TOPIC = "shoes";
     private static final String FRAGRANCES_TOPIC = "fragrances";
 
@@ -47,8 +45,8 @@ public class KafkaStreamsIntegrationTest2 {
     public static void setUpAll() throws Exception {
         EMBEDDED_KAFKA.createTopic(TRANSACTIONS_TOPIC);
         EMBEDDED_KAFKA.createTopic(PURCHASES_TOPIC);
-        EMBEDDED_KAFKA.createTopic(PATTERNS_TOPIC);
-        EMBEDDED_KAFKA.createTopic(REWARDS_TOPIC);
+        EMBEDDED_KAFKA.createTopic(SHOES_TOPIC);
+        EMBEDDED_KAFKA.createTopic(FRAGRANCES_TOPIC);
 
         Properties properties = StreamsTestUtils.getStreamsConfig("integrationTest",
                 EMBEDDED_KAFKA.bootstrapServers(),
