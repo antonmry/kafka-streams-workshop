@@ -24,6 +24,12 @@ public class KafkaStreamsApp1 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp1.class);
 
+    public String getTopology() {
+        return topology;
+    }
+
+    private final String topology;
+
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp1(Properties properties) {
@@ -66,6 +72,7 @@ public class KafkaStreamsApp1 {
         //  See https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.topology = streamsBuilder.build().describe().toString();
     }
 
     void start() {

@@ -28,6 +28,12 @@ public class KafkaStreamsApp3 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp3.class);
 
+    public String getTopology() {
+        return topology;
+    }
+
+    private final String topology;
+
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp3(Properties properties) {
@@ -105,6 +111,7 @@ public class KafkaStreamsApp3 {
         // store to have a change log stored in a topic.
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.topology = streamsBuilder.build().describe().toString();
     }
 
     void start() {

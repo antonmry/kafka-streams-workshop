@@ -90,4 +90,9 @@ public class KafkaStreamsIntegrationTest0 {
 
     }
 
+    @Test
+    public void printTopology() throws Exception {
+        System.out.println(kafkaStreamsApp.getTopology());
+    }
+
 }

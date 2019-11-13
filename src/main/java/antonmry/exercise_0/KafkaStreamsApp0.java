@@ -23,6 +23,12 @@ public class KafkaStreamsApp0 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp0.class);
 
+    public String getTopology() {
+        return topology;
+    }
+
+    private final String topology;
+
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp0(Properties properties) {
@@ -50,6 +56,7 @@ public class KafkaStreamsApp0 {
         //  See https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.topology = streamsBuilder.build().describe().toString();
     }
 
     void start() {

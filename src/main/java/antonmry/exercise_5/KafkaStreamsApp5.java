@@ -1,39 +1,38 @@
 package antonmry.exercise_5;
 
+import antonmry.exercise_5.joiner.PurchaseJoiner;
+import antonmry.exercise_5.partitioner.RewardsStreamPartitioner;
+import antonmry.exercise_5.transformer.PurchaseRewardTransformer;
 import antonmry.model.CorrelatedPurchase;
 import antonmry.model.Purchase;
 import antonmry.model.PurchasePattern;
 import antonmry.model.RewardAccumulator;
-import antonmry.solution_5.joiner.PurchaseJoiner;
-import antonmry.solution_5.partitioner.RewardsStreamPartitioner;
-import antonmry.solution_5.transformer.PurchaseRewardTransformer;
 import antonmry.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.Consumed;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 public class KafkaStreamsApp5 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp5.class);
 
-    private KafkaStreams kafkaStreams;
-
     public String getTopology() {
         return topology;
     }
 
-    private String topology;
+    private final String topology;
+
+    private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp5(Properties properties) {
 
@@ -117,12 +116,15 @@ public class KafkaStreamsApp5 {
 
         joinedKStream.to("shoesAndFragrancesAlerts", Produced.with(stringSerde, correlatedPurchaseSerde));
 
+        // TODO: ingest the purchaseKStream to a new topic "customer_detection"
         purchaseKStream
                 .selectKey((k, v) -> v.getCustomerId())
                 .to("customer_detection", Produced.with(stringSerde, purchaseSerde));
 
+        // TODO: create a new in Memory KeyValue Store with name "customers"
         KeyValueBytesStoreSupplier storeCustomerSupplier = Stores.inMemoryKeyValueStore("customers");
 
+        // TODO: create the new KTable based in the previous topic and event store
         streamsBuilder.table(
                 "customer_detection",
                 Materialized.<String, Purchase>as(storeCustomerSupplier)
@@ -130,15 +132,19 @@ public class KafkaStreamsApp5 {
                         .withValueSerde(purchaseSerde)
         );
 
-        this.topology = streamsBuilder.build().describe().toString();
+        // TODO (Optional): expose the State Store using a REST API
+
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.topology = streamsBuilder.build().describe().toString();
     }
 
     public KeyValueIterator<String, Purchase> getCustomersTableRecords() {
 
+        // TODO: create a ReadOnlyKeyValueStore to read from the Event Store "customers"
         ReadOnlyKeyValueStore<String, Purchase> keyValueStore =
                 this.kafkaStreams.store("customers", QueryableStoreTypes.keyValueStore());
 
+        // TODO: return all the records
         return keyValueStore.all();
     }
 
