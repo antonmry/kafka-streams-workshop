@@ -36,8 +36,9 @@ the credit card number in the `purchase` topic when is copied from the `transact
 You have a deadline in tree months and six-figures budget. Unfortunately, this workshop only last 2 hours so forget 
 the budget and let's start coding.
 
-0. Open `src/test/java/antonmry/exercise_0/KafkaStreamsIntegrationTest0.java` and investigate how an integration test
-is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+0. Open `src/test/java/antonmry/exercise_0/KafkaStreamsIntegrationTest0.java` and investigate how an 
+integration test is done with Kafka Streams and get familiarised with the test and the format of the
+ of the messages.
 1. Open `src/main/java/antonmry/exercise_0/KafkaStreamsApp0.java`
 2. Complete with the proper code the places indicated with a TODO comment (except the optional).
 3. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
@@ -69,8 +70,9 @@ reporting has been deployed but we need to feed it with the information. It will
 
 Next steps:
 
-0. Open `src/test/java/antonmry/exercise_1/KafkaStreamsIntegrationTest1.java` and investigate how an integration test
-is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+0. Open `src/test/java/antonmry/exercise_1/KafkaStreamsIntegrationTest1.java` and investigate how an 
+integration test is done with Kafka Streams and get familiarised with the test and the format of the
+ of the messages.
 1. Open `src/main/java/antonmry/exercise_1/KafkaStreamsApp1.java` and complete with the proper code the places indicated 
 with a TODO comment (except the optional).
 2. Open `src/main/java/antonmry/model/PurchasePattern.java` and complete with the proper code the places indicated 
@@ -106,8 +108,9 @@ But there is a problem: they need a key which it doesn't exist right now. Could 
 
 Next steps:
 
-0. Open `src/test/java/antonmry/exercise_2/KafkaStreamsIntegrationTest2.java` and investigate how an integration test
-is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+0. Open `src/test/java/antonmry/exercise_2/KafkaStreamsIntegrationTest2.java` and investigate how an 
+integration test is done with Kafka Streams and get familiarised with the test and the format of the
+ of the messages.
 1. Open `src/main/java/antonmry/exercise_2/KafkaStreamsApp2.java` and complete with the proper code the places indicated 
 with a TODO comment (except the optional).
 2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
@@ -140,8 +143,7 @@ make the process easier.
 
 Next steps:
 
-0. Open `src/test/java/antonmry/exercise_3/KafkaStreamsIntegrationTest3.java` and investigate how an integration test
-is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+0. Open `src/test/java/antonmry/exercise_3/KafkaStreamsIntegrationTest3.java` and investigate how an integration test is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
 1. Edit `src/main/java/antonmry/exercise_3/partitioner/RewardsStreamPartitioner.java` to establish the partitions of the
 state store.
 2. Open `src/main/java/antonmry/exercise_3/transformer/PurchaseRewardTransformer.java` to add your aggregations.
@@ -179,8 +181,7 @@ Let's figure out how to do it!
 
 Next steps:
 
-0. Open `src/test/java/antonmry/exercise_4/KafkaStreamsIntegrationTest4.java` and investigate how an integration test
-is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+0. Open `src/test/java/antonmry/exercise_4/KafkaStreamsIntegrationTest4.java` and investigate how an integration test is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
 2. Edit `src/main/java/antonmry/exercise_4/joiner/PurchaseJoiner.java` and complete the
 TODO to combine both purchases.
 1. Edit `src/main/java/antonmry/exercise_4/KafkaStreamsApp4.java` and complete with the proper code the places indicated 
@@ -200,7 +201,7 @@ Linux:
 
 Done? Do you have time yet? Try with the optional part:
 
-0. How many state stores are created because of the join?
+0. How many state stores are created because of the join? Why?
 
 1. Modify the window to keep the twenty minutes but having order so we make sure the
 shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase.
@@ -211,6 +212,36 @@ shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase.
   [TimeExtractor official doc](https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/processor/TimestampExtractor.html) 
   for more information.
  
+### Exercise 5: ktable and queryable event stores
+
+The security teams has approached you with a weird requirement. They want to have access
+to the last purchase of each customer but they don't want you to store it outside of Kafka
+to avoid the possibility of someone altering the information. They also want to access to that
+information synchronously using a REST API. They seem to have a very strong opinion about their
+requirements and they wouldn't accept a negative to their request.
+
+Would you be able to implement something like this?  
+
+Next steps:
+
+0. Open `src/test/java/antonmry/exercise_5/KafkaStreamsIntegrationTest5.java` and investigate how the integration test is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
+1. Edit `src/main/java/antonmry/exercise_5/KafkaStreamsApp5.java` and complete with the proper code the places indicated 
+with a TODO comment (except the optional).
+2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
+do it also from command line:
+
+Windows:
+```
+./gradlew.bat test --tests KafkaStreamsIntegrationTest5
+```
+
+Linux:
+```
+./gradlew test --tests KafkaStreamsIntegrationTest5
+```
+
+Done? Do you have time yet? Try with the optional part: implement the real REST API using your favorite framework.
+  
 ## Acknowledgements
 
 This workshop content and source code has been heavily inspired by `Kafka Streams in Action`. If you really want to 
