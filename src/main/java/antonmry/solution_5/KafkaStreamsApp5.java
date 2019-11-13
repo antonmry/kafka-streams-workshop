@@ -11,10 +11,7 @@ import antonmry.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.Consumed;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.*;
@@ -28,6 +25,12 @@ public class KafkaStreamsApp5 {
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp5.class);
 
     private KafkaStreams kafkaStreams;
+
+    public String getTopology() {
+        return topology;
+    }
+
+    private String topology;
 
     public KafkaStreamsApp5(Properties properties) {
 
@@ -124,6 +127,7 @@ public class KafkaStreamsApp5 {
                         .withValueSerde(purchaseSerde)
         );
 
+        this.topology = streamsBuilder.build().describe().toString();
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
     }
 
