@@ -59,34 +59,21 @@ public class KafkaStreamsApp2 {
         rewardsKStream.to("rewards", Produced.with(stringSerde, rewardAccumulatorSerde));
 
         // TODO: create a new KeyValueMapper using the purchase date as key
-        KeyValueMapper<String, Purchase, Long> purchaseDateAsKey = (key, purchase) -> purchase
-                .getPurchaseDate().getTime();
 
         // TODO: create a new Kstream filtering by Price (bigger than 5.00) and
         //  adding the key created in the previous step
-        KStream<Long, Purchase> filteredKStream = purchaseKStream
-                .filter((key, purchase) -> purchase.getPrice() > 5.00)
-                .selectKey(purchaseDateAsKey);
 
         // TODO: ingest the previous KStream in the topic "purchases"
-        filteredKStream.to("purchases", Produced.with(Serdes.Long(), purchaseSerde));
 
         // TODO: create a Predicate to identify purchases in the shoes department
-        Predicate<String, Purchase> isShoe = (key, purchase) -> purchase.getDepartment()
-                .equalsIgnoreCase("shoes");
 
         // TODO: create a Predicate to identify purchases in the fragance department
-        Predicate<String, Purchase> isFragrance = (key, purchase) -> purchase.getDepartment()
-                .equalsIgnoreCase("fragrance");
 
         // TODO: craeate an array of KStream with each branch (shoes and fragances)
-        KStream<String, Purchase>[] kstreamByDept = purchaseKStream.branch(isShoe, isFragrance);
 
         // TODO: ingest the first KStream in the topic "shoes"
-        kstreamByDept[0].to("shoes", Produced.with(stringSerde, purchaseSerde));
 
         // TODO: ingest the second KStream in the topic "fragrances"
-        kstreamByDept[1].to("fragrances", Produced.with(stringSerde, purchaseSerde));
 
         // TODO (OPTIONAL): launch the application and try to ingest and read from the topics using kafkacat
         // https://github.com/edenhill/kafkacat

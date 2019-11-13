@@ -32,14 +32,10 @@ public class PurchaseRewardTransformer implements ValueTransformer<Purchase, Rew
         RewardAccumulator rewardAccumulator = RewardAccumulator.builder(value).build();
 
         // TODO: get from the stateStore the accumulated rewards until now
-        Integer accumulatedSoFar = stateStore.get(rewardAccumulator.getCustomerId());
 
         // TODO: if the accumulated reward until now aren't null, add them to the total points
-        if (accumulatedSoFar != null) {
-             rewardAccumulator.addRewardPoints(accumulatedSoFar);
-        }
+
         // TODO: put in the store the total rewards points
-        stateStore.put(rewardAccumulator.getCustomerId(), rewardAccumulator.getTotalRewardPoints());
 
         return rewardAccumulator;
 

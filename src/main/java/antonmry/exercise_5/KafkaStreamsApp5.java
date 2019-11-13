@@ -117,20 +117,10 @@ public class KafkaStreamsApp5 {
         joinedKStream.to("shoesAndFragrancesAlerts", Produced.with(stringSerde, correlatedPurchaseSerde));
 
         // TODO: ingest the purchaseKStream to a new topic "customer_detection"
-        purchaseKStream
-                .selectKey((k, v) -> v.getCustomerId())
-                .to("customer_detection", Produced.with(stringSerde, purchaseSerde));
 
         // TODO: create a new in Memory KeyValue Store with name "customers"
-        KeyValueBytesStoreSupplier storeCustomerSupplier = Stores.inMemoryKeyValueStore("customers");
 
         // TODO: create the new KTable based in the previous topic and event store
-        streamsBuilder.table(
-                "customer_detection",
-                Materialized.<String, Purchase>as(storeCustomerSupplier)
-                        .withKeySerde(stringSerde)
-                        .withValueSerde(purchaseSerde)
-        );
 
         // TODO (Optional): expose the State Store using a REST API
 
@@ -141,11 +131,9 @@ public class KafkaStreamsApp5 {
     public KeyValueIterator<String, Purchase> getCustomersTableRecords() {
 
         // TODO: create a ReadOnlyKeyValueStore to read from the Event Store "customers"
-        ReadOnlyKeyValueStore<String, Purchase> keyValueStore =
-                this.kafkaStreams.store("customers", QueryableStoreTypes.keyValueStore());
 
         // TODO: return all the records
-        return keyValueStore.all();
+        return null;
     }
 
     void start() {

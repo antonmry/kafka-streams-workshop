@@ -88,13 +88,10 @@ public class RewardAccumulator {
         private Builder(Purchase purchase) {
 
             // TODO: assign customerId using the first and the last name
-            this.customerId = purchase.getLastName() + "," + purchase.getFirstName();
 
             // TODO: assign purchaseTotal based in the price and quantity
-            this.purchaseTotal = purchase.getPrice() * (double) purchase.getQuantity();
 
             // TODO: the customer earns a point per euro, and transaction totals are rounded down to the nearest euro
-            this.rewardPoints = (int) purchaseTotal;
         }
 
 

@@ -82,30 +82,20 @@ public class KafkaStreamsApp3 {
 
         String rewardsStateStoreName = "rewardsPointsStore";
         // TODO: create a new RewardsStreamPartitioner
-        RewardsStreamPartitioner streamPartitioner = new RewardsStreamPartitioner();
 
         // TODO: create a in memory KeyValueStore with name rewardsPointsStore
-        KeyValueBytesStoreSupplier storeSupplier = Stores.inMemoryKeyValueStore(rewardsStateStoreName);
 
         // TODO: create a new KeyValue Store Builder
-        StoreBuilder<KeyValueStore<String, Integer>> storeBuilder = Stores
-                .keyValueStoreBuilder(storeSupplier, Serdes.String(), Serdes.Integer());
 
         // TODO: add the store builder to the topoloy
-        streamsBuilder.addStateStore(storeBuilder);
 
         // TODO: create a new kstream partitoned by CustomerId.
         // Hint: review purchaseKstream methods and use an intermediary topic
-        KStream<String, Purchase> transByCustomerStream = purchaseKStream
-                .through("customer_transactions", Produced.with(stringSerde, purchaseSerde, streamPartitioner));
 
         // TODO: create a stateful kstream aggregated with the total points.
         // Hint: review transformValues method
-        KStream<String, RewardAccumulator> statefulRewardAccumulator = transByCustomerStream.transformValues(() -> new PurchaseRewardTransformer(rewardsStateStoreName),
-                rewardsStateStoreName);
 
         // TODO: ingest the previous Stream in the "rewards" topic
-        statefulRewardAccumulator.to("rewards", Produced.with(stringSerde, rewardAccumulatorSerde));
 
         // TODO (OPTIONAL): investigate the advantage of `transformValues` over `transform` and configure the state
         // store to have a change log stored in a topic.

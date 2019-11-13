@@ -38,19 +38,13 @@ public class KafkaStreamsApp0 {
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
 
-        // TODO: create a new StreamsBuilder
         StreamsBuilder streamsBuilder = new StreamsBuilder();
 
         // TODO: Stream from the topic "transactions"
-        KStream<String, Purchase> transactionKStream = streamsBuilder
-                .stream("transactions", Consumed.with(stringSerde, purchaseSerde));
 
         // TODO: mask the credit card
-        KStream<String, Purchase> purchaseKStream = transactionKStream
-                .mapValues(p -> Purchase.builder(p).maskCreditCard().build());
 
         // TODO: write the result to the topic "purchases"
-        purchaseKStream.to("purchases", Produced.with(stringSerde, purchaseSerde));
 
         // TODO (OPTIONAL): write some unit tests.
         //  See https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html

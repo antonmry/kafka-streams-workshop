@@ -98,35 +98,19 @@ public class KafkaStreamsApp4 {
                 .equalsIgnoreCase("fragrance");
 
         // TODO: create the branch KStream using the customerId as key
-        KStream<String, Purchase>[] branchesStream = purchaseKStream
-                .selectKey((k, v) -> v.getCustomerId())
-                .branch(isShoe, isFragrance);
 
         // TODO: create the shoes KStream and the fragrances KStream
-        KStream<String, Purchase> shoeStream = branchesStream[0];
-        KStream<String, Purchase> fragranceStream = branchesStream[1];
 
         // TODO: ingest the previous KStreams in topics "shoes" and "fragrances"
         // Note: this step isn't required
-        shoeStream.to("shoes", Produced.with(stringSerde, purchaseSerde));
-        fragranceStream.to("fragrances", Produced.with(stringSerde, purchaseSerde));
 
         // TODO: create a new instance of the PurchaseJoiner
-        ValueJoiner<Purchase, Purchase, CorrelatedPurchase> purchaseJoiner = new PurchaseJoiner();
 
         // TODO: create a twenty minute window
-        JoinWindows twentyMinuteWindow = JoinWindows.of(60 * 1000 * 20);
 
         // TODO: create the new join stream using the previously created joiner and window
-        KStream<String, CorrelatedPurchase> joinedKStream = shoeStream.join(fragranceStream,
-                purchaseJoiner,
-                twentyMinuteWindow,
-                Joined.with(stringSerde,
-                        purchaseSerde,
-                        purchaseSerde));
 
         // TODO: ingest the join KStream in the topic "shoesAndFragrancesAlerts"
-        joinedKStream.to("shoesAndFragrancesAlerts", Produced.with(stringSerde, correlatedPurchaseSerde));
 
         // TODO (OPTIONAL): How many state stores are created because of the join?
 

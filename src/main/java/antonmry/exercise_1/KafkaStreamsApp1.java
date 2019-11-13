@@ -40,9 +40,8 @@ public class KafkaStreamsApp1 {
         Serde<String> stringSerde = Serdes.String();
 
         // TODO: create a purchasePattern Serde
-        Serde<PurchasePattern> purchasePatternSerde = StreamsSerdes.PurchasePatternSerde();
+
         // TODO: create a rewardAccumulator Serde
-        Serde<RewardAccumulator> rewardAccumulatorSerde = StreamsSerdes.RewardAccumulatorSerde();
 
         StreamsBuilder streamsBuilder = new StreamsBuilder();
 
@@ -55,18 +54,12 @@ public class KafkaStreamsApp1 {
         purchaseKStream.to("purchases", Produced.with(stringSerde, purchaseSerde));
 
         // TODO: create a pattern KStream
-        KStream<String, PurchasePattern> patternKStream = purchaseKStream
-                .mapValues(purchase -> PurchasePattern.builder(purchase).build());
 
         // TODO: ingest in the topic "patterns" using the purchasePattern serde
-        patternKStream.to("patterns", Produced.with(stringSerde, purchasePatternSerde));
 
         // TODO: create a rewardAccumulator KStream
-        KStream<String, RewardAccumulator> rewardsKStream = purchaseKStream.
-                mapValues(purchase -> RewardAccumulator.builder(purchase).build());
 
         // TODO: ingest in the topic "rewards" using the rewardAccumulator serde
-        rewardsKStream.to("rewards", Produced.with(stringSerde, rewardAccumulatorSerde));
 
         // TODO (OPTIONAL): change from JSON to Avro serialization
         //  See https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro

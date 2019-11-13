@@ -9,6 +9,6 @@ public class RewardsStreamPartitioner implements StreamPartitioner<String, Purch
     @Override
     public Integer partition(String key, Purchase value, int numPartitions) {
         // TODO: change null to partition equitably by the customerId
-        return value.getCustomerId().hashCode() % numPartitions;
+        return null;
     }
 }
