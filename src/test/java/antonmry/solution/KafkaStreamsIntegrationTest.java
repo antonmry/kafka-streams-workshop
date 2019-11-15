@@ -97,12 +97,12 @@ public class KafkaStreamsIntegrationTest {
 
         MockDataProducer.producePurchaseData(producerConfig);
 
-        int expectedNumberOfRecords = 100;
         List<Purchase> actualValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         PURCHASES_TOPIC,
-                        expectedNumberOfRecords),
+                        100,
+                        60000),
                 Purchase.class);
 
         System.out.println("Received: " + actualValues);
@@ -146,13 +146,12 @@ public class KafkaStreamsIntegrationTest {
     @Test
     public void maskCreditCardsAndFilterSmallPurchases() throws Exception {
 
-        int expectedNumberOfRecords = 100;
-
         List<Purchase> previousValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         TRANSACTIONS_TOPIC,
-                        expectedNumberOfRecords),
+                        100,
+                        60000),
                 Purchase.class);
 
         System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
@@ -180,13 +179,12 @@ public class KafkaStreamsIntegrationTest {
     @Test
     public void branchShoesAndFragrances() throws Exception {
 
-        int expectedNumberOfRecords = 100;
-
         List<Purchase> previousValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         TRANSACTIONS_TOPIC,
-                        expectedNumberOfRecords),
+                        100,
+                        60000),
                 Purchase.class);
 
         System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
@@ -242,12 +240,12 @@ public class KafkaStreamsIntegrationTest {
     @Test
     public void testRewardsAccumulator() throws Exception {
 
-        int expectedNumberOfRecords = 100;
         List<RewardAccumulator> actualValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         REWARDS_TOPIC,
-                        expectedNumberOfRecords),
+                        100,
+                        60000),
                 RewardAccumulator.class);
 
         System.out.println(REWARDS_TOPIC + " received: " + actualValues);
@@ -275,37 +273,36 @@ public class KafkaStreamsIntegrationTest {
     @Test
     public void joinShoesAndFragances() throws Exception {
 
-        int expectedNumberOfRecords = 20;
-
         List<CorrelatedPurchase> previousValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         SHOES_AND_FRAGANCES_TOPIC,
-                        expectedNumberOfRecords),
+                        20,
+                        60000),
                 CorrelatedPurchase.class);
 
         System.out.println(SHOES_AND_FRAGANCES_TOPIC + " received: " + previousValues);
-        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " count: " + previousValues.stream().count());
+        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " count: " + (long) previousValues.size());
 
-        assertThat(previousValues.stream().count(), greaterThan(1L));
+        assertThat((long) previousValues.size(), greaterThan(1L));
 
-        previousValues.stream().forEach(v -> assertThat(
+        previousValues.forEach(v -> assertThat(
                 v.getCustomerId(),
                 notNullValue())
         );
 
-        previousValues.stream().forEach(v -> assertThat(
+        previousValues.forEach(v -> assertThat(
                 v.getFirstPurchaseTime(),
                 notNullValue())
         );
 
-        previousValues.stream().forEach(v -> assertThat(
+        previousValues.forEach(v -> assertThat(
                 v.getSecondPurchaseTime(),
                 notNullValue())
         );
 
-        previousValues.stream().forEach(v -> assertThat(
-                v.getItemsPurchased().stream().count(),
+        previousValues.forEach(v -> assertThat(
+                (long) v.getItemsPurchased().size(),
                 greaterThan(1L))
         );
     }
@@ -330,12 +327,12 @@ public class KafkaStreamsIntegrationTest {
         System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
         System.out.println(PURCHASES_TOPIC + " count: " + (long) actualValues.size());
 
-        int tableNumberOfRecords = 20;
         List<Purchase> tableValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         PURCHASES_TABLE_TOPIC,
-                        tableNumberOfRecords),
+                        20,
+                        60000),
                 Purchase.class);
 
         System.out.println(PURCHASES_TABLE_TOPIC + " received: " + tableValues);
