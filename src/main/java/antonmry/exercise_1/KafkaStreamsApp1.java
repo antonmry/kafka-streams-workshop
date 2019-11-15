@@ -39,7 +39,15 @@ public class KafkaStreamsApp1 {
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
 
+        // TODO: Complete `src/main/java/antonmry/exercise_1/model/PurchasePattern.java`
+        // TODO: Complete `src/main/java/antonmry/exercise_1/model/RewardAccumulator.java`
+        //  IMPORTANT: in the rest of the exercises will use the completed versions:
+        //      `src/main/java/antonmry/model/PurchasePattern.java`
+        //      `src/main/java/antonmry/model/RewardAccumulator.java`
+
+
         // TODO: create a purchasePattern Serde
+        //  See https://kafka.apache.org/11/javadoc/org/apache/kafka/common/serialization/Serdes.html
 
         // TODO: create a rewardAccumulator Serde
 
@@ -61,7 +69,7 @@ public class KafkaStreamsApp1 {
 
         // TODO: ingest in the topic "rewards" using the rewardAccumulator serde
 
-        // TODO (OPTIONAL): change from JSON to Avro serialization
+        // TODO (Homework): change from JSON to Avro serialization
         //  See https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);

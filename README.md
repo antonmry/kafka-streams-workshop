@@ -9,6 +9,30 @@ All the exercises will be explained during the workshop. If you are blocked, you
 to see the solution to the previous one. We encourage you to try do the exercises by yourself. It's the best way
 to really learn Kafka Streams.
 
+## In advance steps
+
+In order to be ready for the workshop and avoid dependencies with the Internet connection, you can do the
+following steps:
+
+- Download the code in your laptop:
+
+```
+git clone https://github.com/antonmry/kafka-streams-workshop.git
+```
+
+- Execute one test (it should pass it):
+
+Windows:
+```
+gradlew.bat test --tests KafkaStreamsIntegrationTest
+```
+Linux:
+```
+./gradlew test --tests KafkaStreamsIntegrationTest
+```
+
+- Import the project in your favourite IDE.
+
 ## Software Requirements
 
 To get started you need to have installed following:
@@ -40,20 +64,20 @@ the budget and let's start coding.
 integration test is done with Kafka Streams and get familiarised with the test and the format of the
  of the messages.
 1. Open `src/main/java/antonmry/exercise_0/KafkaStreamsApp0.java`
-2. Complete with the proper code the places indicated with a TODO comment (except the optional).
+2. Complete with the proper code the places indicated with a TODO comment (except the homework).
 3. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
 do it also from command line:
 
 Windows:
 ```
-./gradlew.bat test --tests KafkaStreamsIntegrationTest0
+gradlew.bat test --tests KafkaStreamsIntegrationTest0
 ```
 Linux:
 ```
 ./gradlew test --tests KafkaStreamsIntegrationTest0
 ```
 
-Done? Do you have time yet? Try with the optional part: write some unit tests. See the 
+Done? Do you have time yet? Try with the homework: write some unit tests. See the 
 [official documentation](https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html). 
 
 Topology: 
@@ -77,25 +101,25 @@ Next steps:
 0. Open `src/test/java/antonmry/exercise_1/KafkaStreamsIntegrationTest1.java` and investigate how an 
 integration test is done with Kafka Streams and get familiarised with the test and the format of the
  of the messages.
-1. Open `src/main/java/antonmry/exercise_1/KafkaStreamsApp1.java` and complete with the proper code the places indicated 
-with a TODO comment (except the optional).
-2. Open `src/main/java/antonmry/exercise_1/model/PurchasePattern.java` and complete with the proper code the places 
+1. Open `src/main/java/antonmry/exercise_1/model/PurchasePattern.java` and complete with the proper code the places 
 indicated with a TODO comment. 
-3. Open `src/main/java/antonmry/exercise_1/model/RewardAccumulator.java` and complete with the proper code the places 
+2. Open `src/main/java/antonmry/exercise_1/model/RewardAccumulator.java` and complete with the proper code the places 
 indicated with a TODO comment. 
+3. Open `src/main/java/antonmry/exercise_1/KafkaStreamsApp1.java` and complete with the proper code the places indicated 
+with a TODO comment (except the homework).
 4. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
 do it also from command line:
 
 Windows:
 ```
-./gradlew.bat test --tests KafkaStreamsIntegrationTest1
+gradlew.bat test --tests KafkaStreamsIntegrationTest1
 ```
 Linux:
 ```
 ./gradlew test --tests KafkaStreamsIntegrationTest1
 ```
 
-Done? Do you have time yet? Try with the optional part: improve performance changing from JSON to Avro serialization. 
+Done? Do you have time yet? Try with the homework: improve performance changing from JSON to Avro serialization. 
 See the [official documentation](https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro).
 
 Topology: 
@@ -120,20 +144,20 @@ Next steps:
 integration test is done with Kafka Streams and get familiarised with the test and the format of the
  of the messages.
 1. Open `src/main/java/antonmry/exercise_2/KafkaStreamsApp2.java` and complete with the proper code the places indicated 
-with a TODO comment (except the optional).
+with a TODO comment (except the homework).
 2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
 do it also from command line:
 
 Windows:
 ```
-./gradlew.bat test --tests KafkaStreamsIntegrationTest2
+gradlew.bat test --tests KafkaStreamsIntegrationTest2
 ```
 Linux:
 ```
 ./gradlew test --tests KafkaStreamsIntegrationTest2
 ```
 
-Done? Do you have time yet? Try with the optional part: 
+Done? Do you have time yet? Try with the homework: 
 [setup Kafka in your local environment using Docker](https://hub.docker.com/r/spotify/kafka/), launch the Kstream of the
  first exercise (using the gradle task runExercise0) and ingest in Kafka using 
  [kafkcat](https://github.com/edenhill/kafkacat). 
@@ -160,13 +184,13 @@ Next steps:
 state store.
 2. Open `src/main/java/antonmry/exercise_3/transformer/PurchaseRewardTransformer.java` to add your aggregations.
 3. Edit `src/main/java/antonmry/exercise_3/KafkaStreamsApp3.java` and complete with the proper code the places indicated 
-with a TODO comment (except the optional).
+with a TODO comment (except the homework).
 4. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
 do it also from command line:
 
 Windows:
 ```
-./gradlew.bat test --tests KafkaStreamsIntegrationTest3
+gradlew.bat test --tests KafkaStreamsIntegrationTest3
 ```
 
 Linux:
@@ -174,7 +198,7 @@ Linux:
 ./gradlew test --tests KafkaStreamsIntegrationTest3
 ```
 
-Done? Do you have time yet? Try with the optional part: investigate what's the advantage of `transformValues` over
+Done? Do you have time yet? Try with the homework: investigate what's the advantage of `transformValues` over
 `transform` and configure the state store to have a change log stored in a topic. 
 
 Topology: 
@@ -201,13 +225,13 @@ Next steps:
 2. Edit `src/main/java/antonmry/exercise_4/joiner/PurchaseJoiner.java` and complete the
 TODO to combine both purchases.
 1. Edit `src/main/java/antonmry/exercise_4/KafkaStreamsApp4.java` and complete with the proper code the places indicated 
-with a TODO comment (except the optional).
+with a TODO comment (except the homework).
 2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
 do it also from command line:
 
 Windows:
 ```
-./gradlew.bat test --tests KafkaStreamsIntegrationTest4
+gradlew.bat test --tests KafkaStreamsIntegrationTest4
 ```
 
 Linux:
@@ -215,7 +239,7 @@ Linux:
 ./gradlew test --tests KafkaStreamsIntegrationTest4
 ```
 
-Done? Do you have time yet? Try with the optional part:
+Done? Do you have time yet? Try with the homework:
 
 0. How many state stores are created because of the join? Why?
 
@@ -246,13 +270,13 @@ Next steps:
 
 0. Open `src/test/java/antonmry/exercise_5/KafkaStreamsIntegrationTest5.java` and investigate how the integration test is done with Kafka Streams and get familiarised with the test and the format of the of the messages.
 1. Edit `src/main/java/antonmry/exercise_5/KafkaStreamsApp5.java` and complete with the proper code the places indicated 
-with a TODO comment (except the optional).
+with a TODO comment (except the homework).
 2. Test it! We recommend to launch the test using your IDE instead of Gradle so you can do it easily but you can also
 do it also from command line:
 
 Windows:
 ```
-./gradlew.bat test --tests KafkaStreamsIntegrationTest5
+gradlew.bat test --tests KafkaStreamsIntegrationTest5
 ```
 
 Linux:
@@ -260,7 +284,7 @@ Linux:
 ./gradlew test --tests KafkaStreamsIntegrationTest5
 ```
 
-Done? Do you have time yet? Try with the optional part: implement the real REST API using your favorite framework.
+Done? Do you have time yet? Try with the homework: implement the real REST API using your favorite framework.
 
 Topology: 
 
@@ -286,5 +310,5 @@ a look to [the Github repo with the source code](https://github.com/bbejeck/kafk
 
 ## TODO
 
-- [ ] Delete no needed dependencies
+- [ ] Fix tests 1 - 5 (solution already solved?)
 - [ ] Update Kafka version

@@ -121,8 +121,9 @@ public class KafkaStreamsApp5 {
         // TODO: create a new in Memory KeyValue Store with name "customers"
 
         // TODO: create the new KTable based in the previous topic and event store
+        //  See https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/kstream/KTable.html
 
-        // TODO (Optional): expose the State Store using a REST API
+        // TODO (Homework): expose the State Store using a REST API
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
         this.topology = streamsBuilder.build().describe().toString();

@@ -80,25 +80,31 @@ public class KafkaStreamsApp3 {
 
         kstreamByDept[1].to("fragrances", Produced.with(stringSerde, purchaseSerde));
 
+
+        // TODO: complete `src/main/java/antonmry/exercise_3/partitioner/RewardsStreamPartitioner.java`
+        // TODO: complete `src/main/java/antonmry/exercise_3/transformer/PurchaseRewardTransformer.java`
+
         String rewardsStateStoreName = "rewardsPointsStore";
         // TODO: create a new RewardsStreamPartitioner
 
         // TODO: create a in memory KeyValueStore with name rewardsPointsStore
+        //  See https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/state/KeyValueBytesStoreSupplier.html
 
         // TODO: create a new KeyValue Store Builder
+        //  See https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/state/Stores.html
 
         // TODO: add the store builder to the topoloy
 
         // TODO: create a new kstream partitoned by CustomerId.
-        // Hint: review purchaseKstream methods and use an intermediary topic
+        //  Hint: review purchaseKstream methods and use an intermediary topic
 
         // TODO: create a stateful kstream aggregated with the total points.
-        // Hint: review transformValues method
+        //  Hint: review transformValues method
 
         // TODO: ingest the previous Stream in the "rewards" topic
 
-        // TODO (OPTIONAL): investigate the advantage of `transformValues` over `transform` and configure the state
-        // store to have a change log stored in a topic.
+        // TODO (Homework): investigate the advantage of `transformValues` over `transform` and configure the state
+        //  store to have a change log stored in a topic.
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
         this.topology = streamsBuilder.build().describe().toString();

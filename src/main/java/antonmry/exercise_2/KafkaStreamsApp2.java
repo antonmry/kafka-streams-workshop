@@ -59,6 +59,7 @@ public class KafkaStreamsApp2 {
         rewardsKStream.to("rewards", Produced.with(stringSerde, rewardAccumulatorSerde));
 
         // TODO: create a new KeyValueMapper using the purchase date as key
+        //  See https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/kstream/KeyValueMapper.html
 
         // TODO: create a new Kstream filtering by Price (bigger than 5.00) and
         //  adding the key created in the previous step
@@ -69,14 +70,16 @@ public class KafkaStreamsApp2 {
 
         // TODO: create a Predicate to identify purchases in the fragance department
 
-        // TODO: craeate an array of KStream with each branch (shoes and fragances)
+        // TODO: create an array of KStream with each branch (shoes and fragances)
+        //  See https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/kstream/KStream.html#branch-org.apache.kafka.streams.kstream.Predicate...-
 
         // TODO: ingest the first KStream in the topic "shoes"
 
         // TODO: ingest the second KStream in the topic "fragrances"
 
-        // TODO (OPTIONAL): launch the application and try to ingest and read from the topics using kafkacat
+        // TODO (Homework): launch the application and try to ingest and read from the topics using kafkacat
         // https://github.com/edenhill/kafkacat
+
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
         this.topology = streamsBuilder.build().describe().toString();
     }
