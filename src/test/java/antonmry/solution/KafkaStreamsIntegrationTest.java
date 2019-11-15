@@ -11,6 +11,8 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.integration.utils.IntegrationTestUtils;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.test.StreamsTestUtils;
@@ -88,23 +90,13 @@ public class KafkaStreamsIntegrationTest {
         EMBEDDED_KAFKA.stop();
     }
 
-    @Test
-    public void testExercises() throws Exception {
-        // We execute tests in this way to avoid concurrency problems in Windows machines
 
-        // Exercise 0
-        maskCreditCards();
-        // Exercise 1
-        testPurchasePatterns();
-        // Exercise 2
-        maskCreditCardsAndFilterSmallPurchases();
-        branchShoesAndFragrances();
-        // Exercise 3
-        testRewardsAccumulator();
-        // Exercise 4
-        joinShoesAndFragances();
-        // Exercise 5
-        testQueryableKTable();
+    @Test
+    public void unitTest() {
+        Properties props = new Properties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "test");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "dummy:1234");
+        TopologyTestDriver testDriver = new TopologyTestDriver(, props);
     }
 
     /**

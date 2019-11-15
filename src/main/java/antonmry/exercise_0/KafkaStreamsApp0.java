@@ -48,7 +48,7 @@ public class KafkaStreamsApp0 {
         // TODO: write the result to the topic "purchases"
 
         // TODO (Homework): write some unit tests.
-        //  See https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html
+        //  See https://kafka.apache.org/10/documentation/streams/developer-guide/testing.html
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
         this.topology = streamsBuilder.build().describe().toString();
