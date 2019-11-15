@@ -114,8 +114,7 @@ public class KafkaStreamsApp {
 
         joinedKStream.to("shoesAndFragrancesAlerts", Produced.with(stringSerde, correlatedPurchaseSerde));
 
-        purchaseKStream
-                .selectKey((k, v) -> v.getCustomerId())
+        purchaseKStream.selectKey((k, v) -> v.getCustomerId())
                 .to("customer_detection", Produced.with(stringSerde, purchaseSerde));
 
         KeyValueBytesStoreSupplier storeCustomerSupplier = Stores.inMemoryKeyValueStore("customers");

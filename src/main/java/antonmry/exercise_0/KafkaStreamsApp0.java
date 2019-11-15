@@ -41,12 +41,13 @@ public class KafkaStreamsApp0 {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
 
         // TODO: Stream from the topic "transactions"
+        //  See https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/kstream/KStream.html
 
         // TODO: mask the credit card
 
         // TODO: write the result to the topic "purchases"
 
-        // TODO (OPTIONAL): write some unit tests.
+        // TODO (Homework): write some unit tests.
         //  See https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);

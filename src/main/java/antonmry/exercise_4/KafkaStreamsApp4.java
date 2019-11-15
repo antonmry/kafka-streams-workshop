@@ -97,14 +97,17 @@ public class KafkaStreamsApp4 {
         Predicate<String, Purchase> isFragrance = (key, purchase) -> purchase.getDepartment()
                 .equalsIgnoreCase("fragrance");
 
+        // TODO: complete `src/main/java/antonmry/exercise_4/joiner/PurchaseJoiner.java`
+
         // TODO: create the branch KStream using the customerId as key
 
         // TODO: create the shoes KStream and the fragrances KStream
 
         // TODO: ingest the previous KStreams in topics "shoes" and "fragrances"
-        // Note: this step isn't required
+        //  Note: this step isn't required
 
         // TODO: create a new instance of the PurchaseJoiner
+        //  Note: https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/kstream/KStream.html#join-org.apache.kafka.streams.kstream.KStream-org.apache.kafka.streams.kstream.ValueJoiner-org.apache.kafka.streams.kstream.JoinWindows-
 
         // TODO: create a twenty minute window
 
@@ -112,14 +115,14 @@ public class KafkaStreamsApp4 {
 
         // TODO: ingest the join KStream in the topic "shoesAndFragrancesAlerts"
 
-        // TODO (OPTIONAL): How many state stores are created because of the join?
+        // TODO (Homework): How many state stores are created because of the join?
 
-        // TODO (OPTIONAL): modify the window to keep the twenty minutes but having order so we make sure the
-        // shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase
+        // TODO (Homework): modify the window to keep the twenty minutes but having order so we make sure the
+        //  shoes purchase occurs at least 5 minutes (or less) after the fragrance purchase
 
-        // TODO (OPTIONAL): for the join window you are using the timestamp placed in the metadata when the event is
-        // added to the log but this isn't exactly the requirement. Adapt the code to use the purchaseDate inside the
-        // event.
+        // TODO (Homework): for the join window you are using the timestamp placed in the metadata when the event is
+        //  added to the log but this isn't exactly the requirement. Adapt the code to use the purchaseDate inside the
+        //  event.
 
         this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
         this.topology = streamsBuilder.build().describe().toString();
