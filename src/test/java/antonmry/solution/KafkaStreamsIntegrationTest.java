@@ -88,11 +88,29 @@ public class KafkaStreamsIntegrationTest {
         EMBEDDED_KAFKA.stop();
     }
 
+    @Test
+    public void testExercises() throws Exception {
+        // We execute tests in this way to avoid concurrency problems in Windows machines
+
+        // Exercise 0
+        maskCreditCards();
+        // Exercise 1
+        testPurchasePatterns();
+        // Exercise 2
+        maskCreditCardsAndFilterSmallPurchases();
+        branchShoesAndFragrances();
+        // Exercise 3
+        testRewardsAccumulator();
+        // Exercise 4
+        joinShoesAndFragances();
+        // Exercise 5
+        testQueryableKTable();
+    }
+
     /**
      * Exercise 0
      */
 
-    @Test
     public void maskCreditCards() throws Exception {
 
         MockDataProducer.producePurchaseData(producerConfig);
@@ -102,7 +120,7 @@ public class KafkaStreamsIntegrationTest {
                         consumerConfig,
                         PURCHASES_TOPIC,
                         100,
-                        60000),
+                        60_000),
                 Purchase.class);
 
         System.out.println("Received: " + actualValues);
@@ -118,15 +136,14 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 1
      */
 
-    @Test
     public void testPurchasePatterns() throws Exception {
 
-        int expectedNumberOfRecords = 100;
         List<PurchasePattern> actualValues = MockDataProducer.convertFromJson(
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         PATTERNS_TOPIC,
-                        expectedNumberOfRecords),
+                        100,
+                        60_000),
                 PurchasePattern.class);
 
         System.out.println(PATTERNS_TOPIC + " received: " + actualValues);
@@ -143,7 +160,6 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 2
      */
 
-    @Test
     public void maskCreditCardsAndFilterSmallPurchases() throws Exception {
 
         List<Purchase> previousValues = MockDataProducer.convertFromJson(
@@ -151,7 +167,7 @@ public class KafkaStreamsIntegrationTest {
                         consumerConfig,
                         TRANSACTIONS_TOPIC,
                         100,
-                        60000),
+                        60_000),
                 Purchase.class);
 
         System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
@@ -160,7 +176,8 @@ public class KafkaStreamsIntegrationTest {
                 IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
                         consumerConfig,
                         PURCHASES_TOPIC,
-                        100),
+                        100,
+                        60_000),
                 Purchase.class);
 
         System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
@@ -176,7 +193,6 @@ public class KafkaStreamsIntegrationTest {
         ));
     }
 
-    @Test
     public void branchShoesAndFragrances() throws Exception {
 
         List<Purchase> previousValues = MockDataProducer.convertFromJson(
@@ -184,7 +200,7 @@ public class KafkaStreamsIntegrationTest {
                         consumerConfig,
                         TRANSACTIONS_TOPIC,
                         100,
-                        60000),
+                        60_000),
                 Purchase.class);
 
         System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
@@ -237,7 +253,6 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 3
      */
 
-    @Test
     public void testRewardsAccumulator() throws Exception {
 
         List<RewardAccumulator> actualValues = MockDataProducer.convertFromJson(
@@ -245,7 +260,7 @@ public class KafkaStreamsIntegrationTest {
                         consumerConfig,
                         REWARDS_TOPIC,
                         100,
-                        60000),
+                        60_000),
                 RewardAccumulator.class);
 
         System.out.println(REWARDS_TOPIC + " received: " + actualValues);
@@ -270,7 +285,6 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 4
      */
 
-    @Test
     public void joinShoesAndFragances() throws Exception {
 
         List<CorrelatedPurchase> previousValues = MockDataProducer.convertFromJson(
@@ -278,7 +292,7 @@ public class KafkaStreamsIntegrationTest {
                         consumerConfig,
                         SHOES_AND_FRAGANCES_TOPIC,
                         20,
-                        60000),
+                        60_000),
                 CorrelatedPurchase.class);
 
         System.out.println(SHOES_AND_FRAGANCES_TOPIC + " received: " + previousValues);
@@ -311,7 +325,6 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 5
      */
 
-    @Test
     public void testQueryableKTable() throws Exception {
 
         MockDataProducer.producePurchaseData(producerConfig);
@@ -332,7 +345,7 @@ public class KafkaStreamsIntegrationTest {
                         consumerConfig,
                         PURCHASES_TABLE_TOPIC,
                         20,
-                        60000),
+                        60_000),
                 Purchase.class);
 
         System.out.println(PURCHASES_TABLE_TOPIC + " received: " + tableValues);
@@ -355,6 +368,7 @@ public class KafkaStreamsIntegrationTest {
 /*
     @Test
     public void printTopology() throws Exception {
+        // Utility test in case you would like to print the topology using https://zz85.github.io/kafka-streams-viz/
         System.out.println(kafkaStreamsApp.getTopology());
     }
 */
