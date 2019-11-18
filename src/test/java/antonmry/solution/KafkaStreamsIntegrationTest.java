@@ -6,8 +6,6 @@ import antonmry.model.Purchase;
 import antonmry.model.PurchasePattern;
 import antonmry.model.RewardAccumulator;
 import antonmry.util.datagen.DataGenerator;
-import com.salesforce.kafka.test.KafkaTestCluster;
-import com.salesforce.kafka.test.KafkaTestUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -18,7 +16,6 @@ import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.test.ConsumerRecordFactory;
 import org.apache.kafka.test.StreamsTestUtils;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,45 +42,23 @@ public class KafkaStreamsIntegrationTest {
     private static final String FRAGRANCES_TOPIC = "fragrances";
     private static final String SHOES_AND_FRAGANCES_TOPIC = "shoesAndFragrancesAlerts";
 
-    private static final KafkaTestCluster EMBEDDED_KAFKA = new KafkaTestCluster(1);
     private static TopologyTestDriver testDriver;
 
     @BeforeClass
-    public static void setUpAll() throws Exception {
+    public static void setUpAll() {
 
-        EMBEDDED_KAFKA.start();
-
-        final KafkaTestUtils utils = new KafkaTestUtils(EMBEDDED_KAFKA);
-
-        utils.createTopic(TRANSACTIONS_TOPIC, 1, (short) 1);
-        utils.createTopic(PURCHASES_TOPIC, 1, (short) 1);
-        utils.createTopic(PATTERNS_TOPIC, 1, (short) 1);
-        utils.createTopic(PURCHASES_TABLE_TOPIC, 1, (short) 1);
-        utils.createTopic(REWARDS_TOPIC, 1, (short) 1);
-        utils.createTopic(SHOES_TOPIC, 1, (short) 1);
-        utils.createTopic(FRAGRANCES_TOPIC, 1, (short) 1);
-        utils.createTopic(SHOES_AND_FRAGANCES_TOPIC, 1, (short) 1);
-
-        Properties properties = StreamsTestUtils.getStreamsConfig("integrationTest",
-                EMBEDDED_KAFKA.getKafkaConnectString(),
+        Properties properties = StreamsTestUtils.getStreamsConfig("tested",
+                "127.0.0.1:1234",
                 STRING_SERDE_CLASSNAME,
                 STRING_SERDE_CLASSNAME,
                 new Properties());
 
-
         kafkaStreamsApp = new KafkaStreamsApp(properties);
-        kafkaStreamsApp.start();
 
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "test");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "dummy:1234");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "tester");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:1234");
         testDriver = new TopologyTestDriver(kafkaStreamsApp.getTopology(), props);
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        kafkaStreamsApp.stop();
-        EMBEDDED_KAFKA.stop();
     }
 
     private void producePurchaseData() {

@@ -96,22 +96,12 @@ dependencies {
 
     testCompile group: 'org.apache.kafka', name: 'kafka-streams', version: '2.3.1', classifier: 'test'
     testCompile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.3.1', classifier: 'test'
-    testCompile group: 'com.salesforce.kafka.test', name: 'kafka-junit5', version: '3.2.0'
-    testCompile group: 'org.scala-lang', name: 'scala-library-all', version: '2.12.4'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.0.0'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.10.0'
     testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
 
-    testCompile group:  'org.apache.kafka', name: 'kafka-streams-test-utils', version: '2.3.1'
+    testCompile group: 'org.apache.kafka', name: 'kafka-streams-test-utils', version: '2.3.1'
 
-    testCompile(group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.3.1') {
-        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-    }
-
-    testCompile(group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.3.1', classifier: 'test') {
-        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-    }
 
 }
 
