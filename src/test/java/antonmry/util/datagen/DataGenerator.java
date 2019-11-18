@@ -76,7 +76,7 @@ public class DataGenerator {
 
         return Purchase.builder(purchase).department("Fragrance")
                 .itemPurchased(faker.options().option("Roses", "Fresh", "Red-Eye", "Dark"))
-                .price(Double.parseDouble(faker.commerce().price(3.00, 6.00))).quanity(1).purchaseDate(cafeDate).build();
+                .price(Double.parseDouble(faker.commerce().price(3.00, 6.00).replaceAll(",","."))).quanity(1).purchaseDate(cafeDate).build();
 
     }
 
