@@ -66,8 +66,6 @@ public class KafkaStreamsIntegrationTest {
                 STRING_SERDE_CLASSNAME,
                 new Properties());
 
-        properties.put(IntegrationTestUtils.INTERNAL_LEAVE_GROUP_ON_CLOSE, true);
-
         kafkaStreamsApp = new KafkaStreamsApp(properties);
         kafkaStreamsApp.start();
 
@@ -88,7 +86,6 @@ public class KafkaStreamsIntegrationTest {
         EMBEDDED_KAFKA.stop();
     }
 
-    @Test
     public void testExercises() throws Exception {
         // We execute tests in this way to avoid concurrency problems in Windows machines
 
@@ -111,6 +108,7 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 0
      */
 
+    @Test
     public void maskCreditCards() throws Exception {
 
         MockDataProducer.producePurchaseData(producerConfig);
@@ -136,6 +134,7 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 1
      */
 
+    @Test
     public void testPurchasePatterns() throws Exception {
 
         List<PurchasePattern> actualValues = MockDataProducer.convertFromJson(
@@ -160,6 +159,7 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 2
      */
 
+    @Test
     public void maskCreditCardsAndFilterSmallPurchases() throws Exception {
 
         List<Purchase> previousValues = MockDataProducer.convertFromJson(
@@ -193,6 +193,7 @@ public class KafkaStreamsIntegrationTest {
         ));
     }
 
+    @Test
     public void branchShoesAndFragrances() throws Exception {
 
         List<Purchase> previousValues = MockDataProducer.convertFromJson(
@@ -253,6 +254,7 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 3
      */
 
+    @Test
     public void testRewardsAccumulator() throws Exception {
 
         List<RewardAccumulator> actualValues = MockDataProducer.convertFromJson(
@@ -285,6 +287,7 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 4
      */
 
+    @Test
     public void joinShoesAndFragances() throws Exception {
 
         List<CorrelatedPurchase> previousValues = MockDataProducer.convertFromJson(
@@ -325,6 +328,7 @@ public class KafkaStreamsIntegrationTest {
      * Exercise 5
      */
 
+    @Test
     public void testQueryableKTable() throws Exception {
 
         MockDataProducer.producePurchaseData(producerConfig);

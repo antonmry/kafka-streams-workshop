@@ -47,8 +47,6 @@ public class KafkaStreamsIntegrationTest0 {
                 STRING_SERDE_CLASSNAME,
                 new Properties());
 
-        properties.put(IntegrationTestUtils.INTERNAL_LEAVE_GROUP_ON_CLOSE, true);
-
         kafkaStreamsApp = new KafkaStreamsApp0(properties);
         kafkaStreamsApp.start();
 
