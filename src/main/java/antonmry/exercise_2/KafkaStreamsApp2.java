@@ -10,6 +10,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.slf4j.Logger;
@@ -21,11 +22,11 @@ public class KafkaStreamsApp2 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp2.class);
 
-    public String getTopology() {
+    public Topology getTopology() {
         return topology;
     }
 
-    private final String topology;
+    private final Topology topology;
 
     private KafkaStreams kafkaStreams;
 
@@ -61,7 +62,9 @@ public class KafkaStreamsApp2 {
         // TODO: create a new Kstream filtering by Price (bigger than 5.00) and
         //  adding the key created in the previous step
 
-        // TODO: ingest the previous KStream in the topic "purchases"
+        // TODO: change the following line to ingest the previous KStream in the topic "purchases"
+        purchaseKStream.to("purchases", Produced.with(stringSerde, purchaseSerde));
+
 
         // TODO: create a Predicate to identify purchases in the shoes department
 
@@ -77,8 +80,8 @@ public class KafkaStreamsApp2 {
         // TODO (Homework): launch the application and try to ingest and read from the topics using kafkacat
         // https://github.com/edenhill/kafkacat
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
-        this.topology = streamsBuilder.build().describe().toString();
+        this.topology = streamsBuilder.build();
+        this.kafkaStreams = new KafkaStreams(topology, properties);
     }
 
     void start() {

@@ -9,8 +9,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 
 import org.slf4j.Logger;
@@ -22,11 +21,11 @@ public class KafkaStreamsApp0 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp0.class);
 
-    public String getTopology() {
+    public Topology getTopology() {
         return topology;
     }
 
-    private final String topology;
+    private final Topology topology;
 
     private KafkaStreams kafkaStreams;
 
@@ -47,8 +46,8 @@ public class KafkaStreamsApp0 {
         // TODO (Homework): write some integration tests.
         //  See https://github.com/salesforce/kafka-junit/tree/master/kafka-junit5.
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
-        this.topology = streamsBuilder.build().describe().toString();
+        this.topology = streamsBuilder.build();
+        this.kafkaStreams = new KafkaStreams(topology, properties);
     }
 
     void start() {
