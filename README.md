@@ -45,6 +45,9 @@ so you are not required to install it manually nor you don’t have to be afraid
 You can use IDE of your choice but [IntelliJ IDEA](https://www.jetbrains.com/idea/) provides so far the best Gradle 
 integration even in the free Community version. Import the project as Gradle project get the best developer experience.
 
+Because of [RocksDB requirements](https://github.com/facebook/rocksdb/issues/2531) you may need to install
+the [C++ 2015 redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
+
 ## What are you going to do?
 
 You have just been hired by a big retail company as Data Engineer. Ready for the challenge?.

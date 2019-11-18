@@ -27,7 +27,6 @@ public class DataGenerator {
     }
 
 
-
     public static void setTimestampGenerator(Supplier<Date> timestampGenerator) {
         DataGenerator.timestampGenerator = timestampGenerator;
     }
@@ -47,7 +46,7 @@ public class DataGenerator {
         for (int i = 0; i < number; i++) {
             String itemPurchased = faker.commerce().productName();
             int quantity = faker.number().numberBetween(1, 5);
-            double price = Double.parseDouble(faker.commerce().price(4.00, 295.00));
+            double price = Double.parseDouble(faker.commerce().price(4.00, 295.00).replaceAll(",", "."));
             Date purchaseDate = timestampGenerator.get();
 
             Customer customer = customers.get(random.nextInt(numberCustomers));
@@ -60,7 +59,7 @@ public class DataGenerator {
 
 
             if (purchase.getDepartment().toLowerCase().contains("shoes")) {
-                Purchase fragrancePurchase= generateFragrancePurchase(purchase, faker);
+                Purchase fragrancePurchase = generateFragrancePurchase(purchase, faker);
                 purchases.add(fragrancePurchase);
             }
             purchases.add(purchase);
