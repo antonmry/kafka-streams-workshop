@@ -77,8 +77,8 @@ Linux:
 ./gradlew test --tests KafkaStreamsIntegrationTest0
 ```
 
-Done? Do you have time yet? Try with the homework: write some unit tests. See the 
-[official documentation](https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html). 
+Done? Do you have time yet? Try with the homework: write some integration tests. See the 
+[Kafka JUnit](https://github.com/salesforce/kafka-junit/tree/master/kafka-junit5). 
 
 Topology: 
 
@@ -308,7 +308,3 @@ a look to [the Github repo with the source code](https://github.com/bbejeck/kafk
 - Summary (optional)        -     15 min (2 hours)
 
 
-## TODO
-
-- [ ] Fix tests 1 - 5 (solution already solved?)
-- [ ] Update Kafka version
