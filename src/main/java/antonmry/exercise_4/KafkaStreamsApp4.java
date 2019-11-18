@@ -39,8 +39,6 @@ public class KafkaStreamsApp4 {
 
     public KafkaStreamsApp4(Properties properties) {
 
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
-
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
 
@@ -123,7 +121,7 @@ public class KafkaStreamsApp4 {
         //  added to the log but this isn't exactly the requirement. Adapt the code to use the purchaseDate inside the
         //  event.
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         this.topology = streamsBuilder.build().describe().toString();
     }
 

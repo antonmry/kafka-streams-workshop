@@ -31,8 +31,6 @@ public class KafkaStreamsApp2 {
 
     public KafkaStreamsApp2(Properties properties) {
 
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
-
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
 
@@ -79,7 +77,7 @@ public class KafkaStreamsApp2 {
         // TODO (Homework): launch the application and try to ingest and read from the topics using kafkacat
         // https://github.com/edenhill/kafkacat
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         this.topology = streamsBuilder.build().describe().toString();
     }
 

@@ -37,8 +37,6 @@ public class KafkaStreamsApp3 {
 
     public KafkaStreamsApp3(Properties properties) {
 
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
-
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
 
@@ -105,7 +103,7 @@ public class KafkaStreamsApp3 {
         // TODO (Homework): investigate the advantage of `transformValues` over `transform` and configure the state
         //  store to have a change log stored in a topic.
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         this.topology = streamsBuilder.build().describe().toString();
     }
 

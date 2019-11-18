@@ -34,8 +34,6 @@ public class KafkaStreamsApp1 {
 
     public KafkaStreamsApp1(Properties properties) {
 
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
-
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
 
@@ -72,7 +70,7 @@ public class KafkaStreamsApp1 {
         // TODO (Homework): change from JSON to Avro serialization
         //  See https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         this.topology = streamsBuilder.build().describe().toString();
     }
 

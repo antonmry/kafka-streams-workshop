@@ -19,6 +19,7 @@ import org.apache.kafka.streams.state.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -35,8 +36,6 @@ public class KafkaStreamsApp5 {
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp5(Properties properties) {
-
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
 
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
@@ -105,7 +104,7 @@ public class KafkaStreamsApp5 {
 
         ValueJoiner<Purchase, Purchase, CorrelatedPurchase> purchaseJoiner = new PurchaseJoiner();
 
-        JoinWindows twentyMinuteWindow = JoinWindows.of(60 * 1000 * 20);
+        JoinWindows twentyMinuteWindow = JoinWindows.of(Duration.ofMinutes(20));
 
         KStream<String, CorrelatedPurchase> joinedKStream = shoeStream.join(fragranceStream,
                 purchaseJoiner,
@@ -125,7 +124,7 @@ public class KafkaStreamsApp5 {
 
         // TODO (Homework): expose the State Store using a REST API
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         this.topology = streamsBuilder.build().describe().toString();
     }
 

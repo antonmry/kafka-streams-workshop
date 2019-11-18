@@ -5,22 +5,27 @@ import antonmry.model.CorrelatedPurchase;
 import antonmry.model.Purchase;
 import antonmry.model.PurchasePattern;
 import antonmry.model.RewardAccumulator;
+import antonmry.util.datagen.DataGenerator;
 import com.salesforce.kafka.test.KafkaTestCluster;
 import com.salesforce.kafka.test.KafkaTestUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.integration.utils.IntegrationTestUtils;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueIterator;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.test.ConsumerRecordFactory;
 import org.apache.kafka.test.StreamsTestUtils;
-import org.apache.kafka.test.TestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -30,8 +35,6 @@ public class KafkaStreamsIntegrationTest {
     private static final String STRING_SERDE_CLASSNAME = Serdes.String().getClass().getName();
 
     private static KafkaStreamsApp kafkaStreamsApp;
-    private static Properties producerConfig;
-    private static Properties consumerConfig;
 
     private static final String TRANSACTIONS_TOPIC = "transactions";
     private static final String PURCHASES_TOPIC = "purchases";
@@ -43,6 +46,7 @@ public class KafkaStreamsIntegrationTest {
     private static final String SHOES_AND_FRAGANCES_TOPIC = "shoesAndFragrancesAlerts";
 
     private static final KafkaTestCluster EMBEDDED_KAFKA = new KafkaTestCluster(1);
+    private static TopologyTestDriver testDriver;
 
     @BeforeClass
     public static void setUpAll() throws Exception {
@@ -66,18 +70,14 @@ public class KafkaStreamsIntegrationTest {
                 STRING_SERDE_CLASSNAME,
                 new Properties());
 
+
         kafkaStreamsApp = new KafkaStreamsApp(properties);
         kafkaStreamsApp.start();
 
-        producerConfig = TestUtils.producerConfig(EMBEDDED_KAFKA.getKafkaConnectString(),
-                StringSerializer.class,
-                StringSerializer.class);
-
-        consumerConfig = TestUtils.consumerConfig(EMBEDDED_KAFKA.getKafkaConnectString(), "test",
-                StringDeserializer.class,
-                StringDeserializer.class);
-
-        MockDataProducer.producePurchaseData(producerConfig);
+        Properties props = new Properties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "test");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "dummy:1234");
+        testDriver = new TopologyTestDriver(kafkaStreamsApp.getTopology(), props);
     }
 
     @AfterClass
@@ -86,22 +86,18 @@ public class KafkaStreamsIntegrationTest {
         EMBEDDED_KAFKA.stop();
     }
 
-    public void testExercises() throws Exception {
-        // We execute tests in this way to avoid concurrency problems in Windows machines
+    private void producePurchaseData() {
 
-        // Exercise 0
-        maskCreditCards();
-        // Exercise 1
-        testPurchasePatterns();
-        // Exercise 2
-        maskCreditCardsAndFilterSmallPurchases();
-        branchShoesAndFragrances();
-        // Exercise 3
-        testRewardsAccumulator();
-        // Exercise 4
-        joinShoesAndFragances();
-        // Exercise 5
-        testQueryableKTable();
+        List<Purchase> purchases = DataGenerator.generatePurchases(100, 10);
+        List<String> jsonValues = MockDataProducer.convertToJson(purchases);
+
+        ConsumerRecordFactory<String, String> factory = new ConsumerRecordFactory<>(
+                TRANSACTIONS_TOPIC,
+                new StringSerializer(),
+                new StringSerializer());
+
+        jsonValues.forEach(v -> testDriver.
+                pipeInput(factory.create(TRANSACTIONS_TOPIC, null, v, 9999L)));
     }
 
     /**
@@ -109,16 +105,17 @@ public class KafkaStreamsIntegrationTest {
      */
 
     @Test
-    public void maskCreditCards() throws Exception {
+    public void maskCreditCards() {
 
-        MockDataProducer.producePurchaseData(producerConfig);
+        producePurchaseData();
 
         List<Purchase> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PURCHASES_TOPIC,
-                        100,
-                        60_000),
+                IntStream.range(0, 100)
+                        .mapToObj(v -> testDriver.readOutput(
+                                PURCHASES_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 Purchase.class);
 
         System.out.println("Received: " + actualValues);
@@ -127,7 +124,6 @@ public class KafkaStreamsIntegrationTest {
                 v.getCreditCardNumber(),
                 matchesPattern("xxxx-xxxx-xxxx-\\d\\d\\d\\d")
         ));
-
     }
 
     /**
@@ -135,49 +131,46 @@ public class KafkaStreamsIntegrationTest {
      */
 
     @Test
-    public void testPurchasePatterns() throws Exception {
+    public void testPurchasePatterns() {
+
+        producePurchaseData();
 
         List<PurchasePattern> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PATTERNS_TOPIC,
-                        100,
-                        60_000),
+                IntStream.range(0, 100)
+                        .mapToObj(v -> testDriver.readOutput(
+                                PATTERNS_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 PurchasePattern.class);
 
         System.out.println(PATTERNS_TOPIC + " received: " + actualValues);
 
         actualValues.forEach(v -> assertThat(
-                v.getZipCode(), not(isEmptyString())));
+                v.getZipCode(), not(emptyOrNullString())));
         actualValues.forEach(v -> assertThat(
-                v.getItem(), not(isEmptyString())));
+                v.getItem(), not(emptyOrNullString())));
         actualValues.forEach(v -> assertThat(
                 v.getAmount(), greaterThan(0.0)));
     }
+
 
     /**
      * Exercise 2
      */
 
     @Test
-    public void maskCreditCardsAndFilterSmallPurchases() throws Exception {
+    public void maskCreditCardsAndFilterSmallPurchases() {
 
-        List<Purchase> previousValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        TRANSACTIONS_TOPIC,
-                        100,
-                        60_000),
-                Purchase.class);
-
-        System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
+        producePurchaseData();
 
         List<Purchase> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PURCHASES_TOPIC,
-                        100,
-                        60_000),
+                IntStream.range(0, 10)
+                        .mapToObj(v -> testDriver.readOutput(
+                                PURCHASES_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 Purchase.class);
 
         System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
@@ -194,42 +187,28 @@ public class KafkaStreamsIntegrationTest {
     }
 
     @Test
-    public void branchShoesAndFragrances() throws Exception {
+    public void branchShoesAndFragrances() {
 
-        List<Purchase> previousValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        TRANSACTIONS_TOPIC,
-                        100,
-                        60_000),
-                Purchase.class);
-
-        System.out.println(TRANSACTIONS_TOPIC + " received: " + previousValues);
-
-        long shoesNumberOfRecords = previousValues.stream()
-                .filter(v -> v.getPrice() > 5.0)
-                .filter(v -> v.getDepartment().equalsIgnoreCase("shoes"))
-                .count();
-
-        long fragrancesNumberOfRecords = previousValues.stream()
-                .filter(v -> v.getPrice() > 5.0)
-                .filter(v -> v.getDepartment().equalsIgnoreCase("fragrance"))
-                .count();
+        producePurchaseData();
 
         List<Purchase> shoesValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        SHOES_TOPIC,
-                        Math.toIntExact(shoesNumberOfRecords)),
+                IntStream.range(0, 10)
+                        .mapToObj(v -> testDriver.readOutput(
+                                SHOES_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 Purchase.class);
 
         System.out.println(SHOES_TOPIC + " received: " + shoesValues);
 
         List<Purchase> fragrancesValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        FRAGRANCES_TOPIC,
-                        Math.toIntExact(fragrancesNumberOfRecords)),
+                IntStream.range(0, 10)
+                        .mapToObj(v -> testDriver.readOutput(
+                                FRAGRANCES_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 Purchase.class);
 
         System.out.println(FRAGRANCES_TOPIC + " received: " + fragrancesValues);
@@ -255,14 +234,17 @@ public class KafkaStreamsIntegrationTest {
      */
 
     @Test
-    public void testRewardsAccumulator() throws Exception {
+    public void testRewardsAccumulator() {
+
+        producePurchaseData();
 
         List<RewardAccumulator> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        REWARDS_TOPIC,
-                        100,
-                        60_000),
+                IntStream.range(0, 10)
+                        .mapToObj(v -> testDriver.readOutput(
+                                REWARDS_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 RewardAccumulator.class);
 
         System.out.println(REWARDS_TOPIC + " received: " + actualValues);
@@ -288,37 +270,40 @@ public class KafkaStreamsIntegrationTest {
      */
 
     @Test
-    public void joinShoesAndFragances() throws Exception {
+    public void joinShoesAndFragances() {
 
-        List<CorrelatedPurchase> previousValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        SHOES_AND_FRAGANCES_TOPIC,
-                        20,
-                        60_000),
+        producePurchaseData();
+
+        List<CorrelatedPurchase> actualValues = MockDataProducer.convertFromJson(
+                IntStream.range(0, 10)
+                        .mapToObj(v -> testDriver.readOutput(
+                                SHOES_AND_FRAGANCES_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 CorrelatedPurchase.class);
 
-        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " received: " + previousValues);
-        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " count: " + (long) previousValues.size());
+        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " received: " + actualValues);
+        System.out.println(SHOES_AND_FRAGANCES_TOPIC + " count: " + (long) actualValues.size());
 
-        assertThat((long) previousValues.size(), greaterThan(1L));
+        assertThat((long) actualValues.size(), greaterThan(1L));
 
-        previousValues.forEach(v -> assertThat(
+        actualValues.forEach(v -> assertThat(
                 v.getCustomerId(),
                 notNullValue())
         );
 
-        previousValues.forEach(v -> assertThat(
+        actualValues.forEach(v -> assertThat(
                 v.getFirstPurchaseTime(),
                 notNullValue())
         );
 
-        previousValues.forEach(v -> assertThat(
+        actualValues.forEach(v -> assertThat(
                 v.getSecondPurchaseTime(),
                 notNullValue())
         );
 
-        previousValues.forEach(v -> assertThat(
+        actualValues.forEach(v -> assertThat(
                 (long) v.getItemsPurchased().size(),
                 greaterThan(1L))
         );
@@ -329,36 +314,37 @@ public class KafkaStreamsIntegrationTest {
      */
 
     @Test
-    public void testQueryableKTable() throws Exception {
+    public void testQueryableKTable() {
 
-        MockDataProducer.producePurchaseData(producerConfig);
+        producePurchaseData();
 
-        int expectedNumberOfRecords = 100;
         List<Purchase> actualValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PURCHASES_TOPIC,
-                        expectedNumberOfRecords),
+                IntStream.range(0, 10)
+                        .mapToObj(v -> testDriver.readOutput(
+                                PURCHASES_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 Purchase.class);
 
         System.out.println(PURCHASES_TOPIC + " received: " + actualValues);
         System.out.println(PURCHASES_TOPIC + " count: " + (long) actualValues.size());
 
         List<Purchase> tableValues = MockDataProducer.convertFromJson(
-                IntegrationTestUtils.waitUntilMinValuesRecordsReceived(
-                        consumerConfig,
-                        PURCHASES_TABLE_TOPIC,
-                        20,
-                        60_000),
+                IntStream.range(0, 10)
+                        .mapToObj(v -> testDriver.readOutput(
+                                PURCHASES_TABLE_TOPIC,
+                                new StringDeserializer(),
+                                new StringDeserializer()
+                        ).value()).collect(Collectors.toList()),
                 Purchase.class);
 
         System.out.println(PURCHASES_TABLE_TOPIC + " received: " + tableValues);
         System.out.println(PURCHASES_TABLE_TOPIC + " count: " + (long) tableValues.size());
 
-        // We need to give time to the state store to be available
-        Thread.sleep(20000);
+        KeyValueStore<String, Purchase> store = testDriver.getKeyValueStore("customers");
+        KeyValueIterator<String, Purchase> range = store.all();
 
-        KeyValueIterator<String, Purchase> range = kafkaStreamsApp.getCustomersTableRecords();
         int total = 0;
         System.out.print("customers event store keys: ");
         while (range.hasNext()) {
@@ -369,11 +355,9 @@ public class KafkaStreamsIntegrationTest {
         assertThat(total, is(greaterThan(0)));
     }
 
-/*
     @Test
-    public void printTopology() throws Exception {
+    public void printTopology() {
         // Utility test in case you would like to print the topology using https://zz85.github.io/kafka-streams-viz/
-        System.out.println(kafkaStreamsApp.getTopology());
+        System.out.println(kafkaStreamsApp.getTopology().describe().toString());
     }
-*/
 }

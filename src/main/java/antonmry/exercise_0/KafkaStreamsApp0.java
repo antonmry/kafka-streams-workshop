@@ -32,8 +32,6 @@ public class KafkaStreamsApp0 {
 
     public KafkaStreamsApp0(Properties properties) {
 
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
-
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
 
@@ -49,7 +47,7 @@ public class KafkaStreamsApp0 {
         // TODO (Homework): write some unit tests.
         //  See https://kafka.apache.org/11/documentation/streams/developer-guide/testing.html
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         this.topology = streamsBuilder.build().describe().toString();
     }
 
