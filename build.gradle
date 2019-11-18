@@ -86,30 +86,22 @@ junitPlatform {
 dependencies {
     compile group: 'com.google.code.gson', name: 'gson', version: '2.6.1'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    compile group: 'org.apache.kafka', name: 'kafka-streams', version: '1.0.0'
-    compile group: 'org.apache.kafka', name: 'kafka-clients', version: '1.0.0'
+    compile group: 'org.apache.kafka', name: 'kafka-streams', version: '2.3.1'
+    compile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.3.1'
 
     compile(group: 'com.github.javafaker', name: 'javafaker', version: '0.12') {
         exclude group: 'ch.qos.logback'
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
 
-    testCompile group: 'org.apache.kafka', name: 'kafka-streams', version: '1.0.0', classifier: 'test'
-    testCompile group: 'org.apache.kafka', name: 'kafka-clients', version: '1.0.0', classifier: 'test'
-    testCompile group: 'com.salesforce.kafka.test', name: 'kafka-junit5', version: '3.2.0'
-    testCompile group: 'org.scala-lang', name: 'scala-library-all', version: '2.12.4'
+    testCompile group: 'org.apache.kafka', name: 'kafka-streams', version: '2.3.1', classifier: 'test'
+    testCompile group: 'org.apache.kafka', name: 'kafka-clients', version: '2.3.1', classifier: 'test'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.0'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.0.0'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.10.0'
     testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version: '2.0.0.0'
 
-    testCompile(group: 'org.apache.kafka', name: 'kafka_2.12', version: '1.0.0') {
-        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-    }
+    testCompile group: 'org.apache.kafka', name: 'kafka-streams-test-utils', version: '2.3.1'
 
-    testCompile(group: 'org.apache.kafka', name: 'kafka_2.12', version: '1.0.0', classifier: 'test') {
-        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-    }
 
 }
 

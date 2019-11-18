@@ -1,6 +1,5 @@
 package antonmry.exercise_4;
 
-import antonmry.exercise_4.joiner.PurchaseJoiner;
 import antonmry.exercise_4.partitioner.RewardsStreamPartitioner;
 import antonmry.exercise_4.transformer.PurchaseRewardTransformer;
 import antonmry.model.CorrelatedPurchase;
@@ -11,10 +10,10 @@ import antonmry.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
@@ -30,17 +29,15 @@ public class KafkaStreamsApp4 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp4.class);
 
-    public String getTopology() {
+    public Topology getTopology() {
         return topology;
     }
 
-    private final String topology;
+    private final Topology topology;
 
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp4(Properties properties) {
-
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
 
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
@@ -99,12 +96,18 @@ public class KafkaStreamsApp4 {
 
         // TODO: complete `src/main/java/antonmry/exercise_4/joiner/PurchaseJoiner.java`
 
-        // TODO: create the branch KStream using the customerId as key
+        // TODO: change the following code to create the branch KStream using the customerId as key
+        KStream<String, Purchase>[] branchesStream = purchaseKStream
+                .branch(isShoe, isFragrance);
 
-        // TODO: create the shoes KStream and the fragrances KStream
+        // Create the shoes KStream and the fragrances KStream
+        KStream<String, Purchase> shoeStream = branchesStream[0];
+        KStream<String, Purchase> fragranceStream = branchesStream[1];
 
-        // TODO: ingest the previous KStreams in topics "shoes" and "fragrances"
-        //  Note: this step isn't required
+        // Ingest the previous KStreams in topics "shoes" and "fragrances"
+        //  Note: this step is only required for testing
+        shoeStream.to("shoes", Produced.with(stringSerde, purchaseSerde));
+        fragranceStream.to("fragrances", Produced.with(stringSerde, purchaseSerde));
 
         // TODO: create a new instance of the PurchaseJoiner
         //  Note: https://kafka.apache.org/10/javadoc/org/apache/kafka/streams/kstream/KStream.html#join-org.apache.kafka.streams.kstream.KStream-org.apache.kafka.streams.kstream.ValueJoiner-org.apache.kafka.streams.kstream.JoinWindows-
@@ -124,8 +127,8 @@ public class KafkaStreamsApp4 {
         //  added to the log but this isn't exactly the requirement. Adapt the code to use the purchaseDate inside the
         //  event.
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
-        this.topology = streamsBuilder.build().describe().toString();
+        this.topology = streamsBuilder.build();
+        this.kafkaStreams = new KafkaStreams(topology, properties);
     }
 
     void start() {

@@ -1,18 +1,16 @@
 package antonmry.exercise_1;
 
 import antonmry.model.Purchase;
-import antonmry.exercise_1.model.PurchasePattern;
-import antonmry.exercise_1.model.RewardAccumulator;
 import antonmry.exercise_1.util.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.slf4j.Logger;
@@ -24,17 +22,15 @@ public class KafkaStreamsApp1 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp1.class);
 
-    public String getTopology() {
+    public Topology getTopology() {
         return topology;
     }
 
-    private final String topology;
+    private final Topology topology;
 
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp1(Properties properties) {
-
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
 
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
@@ -72,8 +68,8 @@ public class KafkaStreamsApp1 {
         // TODO (Homework): change from JSON to Avro serialization
         //  See https://docs.confluent.io/current/streams/developer-guide/datatypes.html#avro
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
-        this.topology = streamsBuilder.build().describe().toString();
+        this.topology = streamsBuilder.build();
+        this.kafkaStreams = new KafkaStreams(topology, properties);
     }
 
     void start() {

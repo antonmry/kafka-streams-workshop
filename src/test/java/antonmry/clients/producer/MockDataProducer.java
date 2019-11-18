@@ -103,7 +103,7 @@ public class MockDataProducer {
     }
 
 
-    private static <T> List<String> convertToJson(List<T> generatedDataItems) {
+    public static <T> List<String> convertToJson(List<T> generatedDataItems) {
         List<String> jsonList = new ArrayList<>();
         for (T generatedData : generatedDataItems) {
             jsonList.add(convertToJson(generatedData));

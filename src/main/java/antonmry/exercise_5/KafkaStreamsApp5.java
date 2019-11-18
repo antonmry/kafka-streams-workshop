@@ -11,7 +11,6 @@ import antonmry.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
@@ -19,24 +18,22 @@ import org.apache.kafka.streams.state.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import java.time.Duration;
 import java.util.Properties;
 
 public class KafkaStreamsApp5 {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsApp5.class);
 
-    public String getTopology() {
+    public Topology getTopology() {
         return topology;
     }
 
-    private final String topology;
+    private final Topology topology;
 
     private KafkaStreams kafkaStreams;
 
     public KafkaStreamsApp5(Properties properties) {
-
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
 
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<String> stringSerde = Serdes.String();
@@ -105,7 +102,7 @@ public class KafkaStreamsApp5 {
 
         ValueJoiner<Purchase, Purchase, CorrelatedPurchase> purchaseJoiner = new PurchaseJoiner();
 
-        JoinWindows twentyMinuteWindow = JoinWindows.of(60 * 1000 * 20);
+        JoinWindows twentyMinuteWindow = JoinWindows.of(Duration.ofMinutes(20));
 
         KStream<String, CorrelatedPurchase> joinedKStream = shoeStream.join(fragranceStream,
                 purchaseJoiner,
@@ -125,8 +122,8 @@ public class KafkaStreamsApp5 {
 
         // TODO (Homework): expose the State Store using a REST API
 
-        this.kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
-        this.topology = streamsBuilder.build().describe().toString();
+        this.topology = streamsBuilder.build();
+        this.kafkaStreams = new KafkaStreams(topology, properties);
     }
 
     public KeyValueIterator<String, Purchase> getCustomersTableRecords() {

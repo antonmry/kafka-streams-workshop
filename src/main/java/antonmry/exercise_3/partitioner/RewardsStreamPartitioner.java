@@ -7,7 +7,7 @@ import org.apache.kafka.streams.processor.StreamPartitioner;
 public class RewardsStreamPartitioner implements StreamPartitioner<String, Purchase> {
 
     @Override
-    public Integer partition(String key, Purchase value, int numPartitions) {
+    public Integer partition(String topic, String key, Purchase value, int numPartitions) {
         // TODO: change null to partition equitably by the customerId
         return null;
     }
